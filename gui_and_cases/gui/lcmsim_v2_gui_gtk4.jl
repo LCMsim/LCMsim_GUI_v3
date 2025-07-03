@@ -7,7 +7,7 @@ using NativeFileDialog
 using LinearAlgebra
 
 #uncomment next line for testing purpose only
-i_batch=1;i_model=3;i_mesh=1;mypath="D:\\work\\github\\LCMsim_GUI_v3\\gui_and_cases\\cases";repositorypath="D:\\work\\github\\LCMsim_v3.jl";guipath="D:\\work\\github\\lcmsim_gui_v3\\gui_and_cases\\gui"
+#i_batch=1;i_model=3;i_mesh=1;mypath="D:\\work\\github\\LCMsim_GUI_v3\\gui_and_cases\\cases";repositorypath="D:\\work\\github\\LCMsim_v3.jl";guipath="D:\\work\\github\\lcmsim_gui_v3\\gui_and_cases\\gui"
 
     @info "i_batch = $i_batch"
     @info "i_model = $i_model"
