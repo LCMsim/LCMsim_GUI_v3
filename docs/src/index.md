@@ -1,4 +1,4 @@
-# LCMsim v2
+# LCMsim v3
 
 ```@raw html
 <img src="assets/figures/overview.png">
