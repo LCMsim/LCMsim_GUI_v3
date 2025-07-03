@@ -5,5 +5,5 @@ mypath=joinpath(pwd())
 repositorypath="D:\\work\\github\\LCMsim_v3.jl"
 guipath="D:\\work\\github\\LCMsim_GUI_v3\\gui_and_cases\\gui"
 
-include(joinpath(guipath,"lcmsim_v2_gui_gtk4.jl"))
+include(joinpath(guipath,"lcmsim_v3_gui_gtk4.jl"))
 
