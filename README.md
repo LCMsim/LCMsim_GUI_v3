@@ -31,4 +31,4 @@ The current path settings assume that a Julia terminal is opened, the pwd() is t
 
 
 ## General instruction for using LCMsim_v2/v3
-See https://lcmsim.github.io/LCMsim_GUI_v3/build/
+See https://lcmsim.github.io/LCMsim_GUI_v3/build/ 
