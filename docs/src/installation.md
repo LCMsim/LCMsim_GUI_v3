@@ -1,6 +1,6 @@
 # Installation 
 
-The intended operating system for LCMsim v2 is Windows. The software was extensively tested for Windows 10. In order to use LCMsim v2 for filling simulations perform the following steps:
+The intended operating system for LCMsim v3 is Windows. The software was extensively tested for Windows 10. In order to use LCMsim v3 for filling simulations perform the following steps:
 - Download LCMsim v3: [Latest release](https://www.obertscheider.com/download/LCMsim_v3_latestrelease.zip)
 - Extract, change to install folder and double click on the batch file to install the missing Julia packages (or alternatively install Julia and all the packages):
 ```@raw html
