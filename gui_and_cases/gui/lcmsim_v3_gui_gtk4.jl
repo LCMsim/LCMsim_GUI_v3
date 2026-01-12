@@ -257,8 +257,8 @@ using LinearAlgebra
     elseif i_batch==1
         g[1,2] = in1;   g[2,2] = in2;  
         g[1,3] = in1a;  g[2,3] = in2a;
-        g[1,4]=sm;g[2,4] = mf; g[3,4] = ps;  g[4,4] = pm;  
-        g[4,5] = mf3;  
+        g[1,4]=sm;g[2,4] = mf; g[3,4] = ps;  g[4,4] = pm;  g[5,4] = r1;  g[6,4] = r2;
+                                             g[4,5] = mf3;  
         g[4,6] = mf2;  
         g[4,7] = im;
         g[1,8] = par_0; g[2,8] = t;  g[3,8] = in3;                             g[6,8]=f11
@@ -281,6 +281,7 @@ using LinearAlgebra
         set_gtk_property!(mf,:text,str);
     end
     function pm_clicked(w)
+        i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
         str0 = get_gtk_property(par_0,:text,String); 
         str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String); str6 = get_gtk_property(par_4,:text,String); str7 = get_gtk_property(par_5,:text,String);
         str11 = get_gtk_property(p0_1,:text,String); str12 = get_gtk_property(p0_2,:text,String); str13 = get_gtk_property(p0_3,:text,String); str14 = get_gtk_property(p0_4,:text,String); str15 = get_gtk_property(p0_5,:text,String); str16 = get_gtk_property(p0_6,:text,String); str17 = get_gtk_property(p0_7,:text,String); str18 = get_gtk_property(p0_8,:text,String); str19 = get_gtk_property(p0_9,:text,String);
@@ -288,6 +289,13 @@ using LinearAlgebra
         str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String); str38 = get_gtk_property(p2_8,:text,String); str39 = get_gtk_property(p2_9,:text,String);
         str41 = get_gtk_property(p3_1,:text,String); str42 = get_gtk_property(p3_2,:text,String); str43 = get_gtk_property(p3_3,:text,String); str44 = get_gtk_property(p3_4,:text,String); str45 = get_gtk_property(p3_5,:text,String); str46 = get_gtk_property(p3_6,:text,String); str47 = get_gtk_property(p3_7,:text,String); str48 = get_gtk_property(p3_8,:text,String); str49 = get_gtk_property(p3_9,:text,String);
         str51 = get_gtk_property(p4_1,:text,String); str52 = get_gtk_property(p4_2,:text,String); str53 = get_gtk_property(p4_3,:text,String); str54 = get_gtk_property(p4_4,:text,String); str55 = get_gtk_property(p4_5,:text,String); str56 = get_gtk_property(p4_6,:text,String); str57 = get_gtk_property(p4_7,:text,String); str58 = get_gtk_property(p4_8,:text,String); str59 = get_gtk_property(p4_9,:text,String);
+        if i_model==3
+            str19a = get_gtk_property(p0_10,:text,String); str19b = get_gtk_property(p0_11,:text,String); str19c = get_gtk_property(p0_12,:text,String); str19d = get_gtk_property(p0_13,:text,String); str19e = get_gtk_property(p0_14,:text,String); str19f = get_gtk_property(p0_15,:text,String); str19g = get_gtk_property(p0_16,:text,String); str19h = get_gtk_property(p0_17,:text,String); 
+            str29a = get_gtk_property(p1_10,:text,String); str29b = get_gtk_property(p1_11,:text,String); str29c = get_gtk_property(p1_12,:text,String); str29d = get_gtk_property(p1_13,:text,String); str29e = get_gtk_property(p1_14,:text,String); str29f = get_gtk_property(p1_15,:text,String); str29g = get_gtk_property(p1_16,:text,String); str29h = get_gtk_property(p1_17,:text,String); 
+            str39a = get_gtk_property(p2_10,:text,String); str39b = get_gtk_property(p2_11,:text,String); str39c = get_gtk_property(p2_12,:text,String); str39d = get_gtk_property(p2_13,:text,String); str39e = get_gtk_property(p2_14,:text,String); str39f = get_gtk_property(p2_15,:text,String); str39g = get_gtk_property(p2_16,:text,String); str39h = get_gtk_property(p2_17,:text,String); 
+            str49a = get_gtk_property(p3_10,:text,String); str49b = get_gtk_property(p3_11,:text,String); str49c = get_gtk_property(p3_12,:text,String); str49d = get_gtk_property(p3_13,:text,String); str49e = get_gtk_property(p3_14,:text,String); str49f = get_gtk_property(p3_15,:text,String); str49g = get_gtk_property(p3_16,:text,String); str49h = get_gtk_property(p3_17,:text,String); 
+            str59a = get_gtk_property(p4_10,:text,String); str59b = get_gtk_property(p4_11,:text,String); str59c = get_gtk_property(p4_12,:text,String); str59d = get_gtk_property(p4_13,:text,String); str59e = get_gtk_property(p4_14,:text,String); str59f = get_gtk_property(p4_15,:text,String); str59g = get_gtk_property(p4_16,:text,String); str59h = get_gtk_property(p4_17,:text,String); 
+        end
         if f1.selected==0; patchtype1val=Int64(0); elseif f1.selected==1; patchtype1val=Int64(1); elseif f1.selected==2; patchtype1val=Int64(3); elseif f1.selected==3; patchtype1val=Int64(2); end
         if f2.selected==0; patchtype2val=Int64(0); elseif f2.selected==1; patchtype2val=Int64(1); elseif f2.selected==2; patchtype2val=Int64(3); elseif f2.selected==3; patchtype2val=Int64(2); end
         if f3.selected==0; patchtype3val=Int64(0); elseif f3.selected==1; patchtype3val=Int64(1); elseif f3.selected==2; patchtype3val=Int64(3); elseif f3.selected==3; patchtype3val=Int64(2); end
@@ -334,7 +342,6 @@ using LinearAlgebra
             wfn = open(writefilename,"w")  
             lines=String[]
             notusedsets = Vector{String}()
-            i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
             if i_model==1 || i_model==2 || i_model==3
                 push!(lines,"name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z")
                 push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
@@ -345,31 +352,106 @@ using LinearAlgebra
                     push!(notusedsets, "5")
                     push!(notusedsets, "6")
                 else
-                    push!(notusedsets, "6")                
-                    if patchtype1val==0 || patchtype1val==1 || patchtype1val==3
-                        push!(notusedsets, "2")
-                    else
-                        patchtype="patch"
-                        push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str22,",","1e5"))
-                    end
-                    if patchtype2val==0 || patchtype2val==1 || patchtype2val==3
-                        push!(notusedsets, "3")
-                    else
-                        patchtype="patch"
-                        push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str32,",","1e5"))
-                    end
-                    if patchtype3val==0 || patchtype3val==1 || patchtype3val==3
-                        push!(notusedsets, "4")
-                    else
-                        patchtype="patch"
-                        push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str42,",","1e5"))
-                    end
-                    if patchtype4val==0 || patchtype4val==1 || patchtype4val==3
-                        push!(notusedsets, "5")
-                    else
-                        patchtype="patch"
-                        push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str52,",","1e5"))
-                    end
+
+                        push!(notusedsets, "6")  
+                        if patchtype1val==0
+                            push!(notusedsets, "2")
+                        else
+                            if patchtype1val==1
+                                patchtype="inlet"
+                                str21=str11
+                                if i_model==3; str29e=str19e; end
+                            elseif patchtype1val==2
+                                patchtype="patch"
+                            elseif patchtype1val==3
+                                patchtype="outlet"
+                            end
+                            if i_model==1 || i_model==2
+                                push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str22,",","0.5e5",",",str22,",","1e5",",","0.0",",",str23,",","0.0",",",str22,",",str23,",",str23))
+                            elseif i_model==3
+                                push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str28,",",str29,",",str29a,",",str29b,",",str29c,",",str29d,",",str29e,",",str29f,",",str29g,",",str29h))
+                            end
+                        end
+                        if patchtype2val==0
+                            push!(notusedsets, "3")
+                        else
+                            if patchtype2val==1
+                                patchtype="inlet"
+                                str31=str11
+                                if i_model==3; str39e=str19e; end
+                            elseif patchtype2val==2
+                                patchtype="patch"
+                            elseif patchtype2val==3
+                                patchtype="outlet"
+                            end
+                            if i_model==1 || i_model==2
+                                push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str32,",","0.5e5",",",str32,",","1e5",",","0.0",",",str33,",","0.0",",",str32,",",str33,",",str33))
+                            elseif i_model==3
+                                push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str38,",",str39,",",str39a,",",str39b,",",str39c,",",str39d,",",str39e,",",str39f,",",str39g,",",str39h))
+                            end
+                        end
+                        if patchtype3val==0
+                            push!(notusedsets, "4")
+                        else
+                            if patchtype3val==1
+                                patchtype="inlet"
+                                str41=str11
+                                if i_model==3; str49e=str19e; end
+                            elseif patchtype3val==2
+                                patchtype="patch"
+                            elseif patchtype3val==3
+                                patchtype="outlet"
+                            end
+                            if i_model==1 || i_model==2
+                                push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str42,",","0.5e5",",",str42,",","1e5",",","0.0",",",str43,",","0.0",",",str42,",",str43,",",str43))
+                            elseif i_model==3
+                                push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str48,",",str49,",",str49a,",",str49b,",",str49c,",",str49d,",",str49e,",",str49f,",",str49g,",",str49h))
+                            end
+                        end
+                        if patchtype4val==0
+                            push!(notusedsets, "5")
+                        else
+                            if patchtype4val==1
+                                patchtype="inlet"
+                                str51=str11
+                                if i_model==3; str59e=str19e; end
+                            elseif patchtype4val==2
+                                patchtype="patch"
+                            elseif patchtype4val==3
+                                patchtype="outlet"
+                            end
+                            if i_model==1 || i_model==2
+                                push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str52,",","0.5e5",",",str52,",","1e5",",","0.0",",",str53,",","0.0",",",str52,",",str53,",",str53))
+                            elseif i_model==3
+                                push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str58,",",str59,",",str59a,",",str59b,",",str59c,",",str59d,",",str59e,",",str59f,",",str59g,",",str59h))
+                            end
+                        end
+
+                    #push!(notusedsets, "6")                
+                    #if patchtype1val==0 || patchtype1val==1 || patchtype1val==3
+                    #    push!(notusedsets, "2")
+                    #else
+                    #    patchtype="patch"
+                    #    push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str22,",","1e5"))
+                    #end
+                    #if patchtype2val==0 || patchtype2val==1 || patchtype2val==3
+                    #    push!(notusedsets, "3")
+                    #else
+                    #    patchtype="patch"
+                    #    push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str32,",","1e5"))
+                    #end
+                    #if patchtype3val==0 || patchtype3val==1 || patchtype3val==3
+                    #    push!(notusedsets, "4")
+                    #else
+                    #    patchtype="patch"
+                    #    push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str42,",","1e5"))
+                    #end
+                    #if patchtype4val==0 || patchtype4val==1 || patchtype4val==3
+                    #    push!(notusedsets, "5")
+                    #else
+                    #    patchtype="patch"
+                    #    push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str52,",","1e5"))
+                    #end
                 end
             end
             for line in lines
@@ -437,7 +519,7 @@ using LinearAlgebra
             modeltype = LCMsim_v3.model_3
         end  
         case=LCMsim_v3.create(meshfile,partfile,simfile,modeltype,i_advanced)
-            
+
         if i_batch==0
             if isfile(_meshfile)
                 rm(_meshfile)
@@ -592,6 +674,7 @@ using LinearAlgebra
        
         end
         rm(hdf_path)       
+
     end
     function ps_clicked(w)
         i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
