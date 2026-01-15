@@ -1,0 +1,9 @@
+mu_resin,p_a,p_init,rho_0_air,rho_0_oil
+0.06,1.35e5,1.0e5,1.2,960
+
+name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z,
+base,base,3e-3,0.7,3e-10,1,1,0,0
+central_inlet,inlet
+patch1,patch,3e-3,0.7,3e-10,1,1,0,0
+patch2,patch,3e-3,0.7,3e-10,1,1,0,0
+patch3,patch,3e-3,0.7,3e-10,1,1,0,0

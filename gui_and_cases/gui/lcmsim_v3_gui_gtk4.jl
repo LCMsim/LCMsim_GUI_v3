@@ -35,6 +35,10 @@ using LinearAlgebra
 
 
     sm=GtkButton("Select mesh file");pm=GtkButton("Plot mesh");ps=GtkButton("Plot sets")
+    ps1=GtkEntry(); set_gtk_property!(ps1,:text,"1")
+    ps2=GtkEntry(); set_gtk_property!(ps2,:text,"");set_gtk_property!(ps2,:editable,false)
+    ph=GtkButton("Get params")
+    ph2=GtkEntry(); set_gtk_property!(ph2,:text,"");set_gtk_property!(ph2,:editable,false)
     if i_mesh==1
         mf=GtkEntry(); set_gtk_property!(mf,:text,joinpath(mypath,"casefiles","mesh.dat"));
     elseif i_mesh==2
@@ -46,8 +50,10 @@ using LinearAlgebra
     mf3 = GtkDropDown(choices)
     mf3.selected = 0
     signal_connect(mf3, "notify::selected") do widget, others...
-    idx11 = mf3.selected
+        idx11 = mf3.selected
     end
+    inputfile1=GtkButton("Select input file")
+    inputfile2=GtkEntry(); set_gtk_property!(inputfile2,:text,joinpath(mypath,"casefiles","input_lcmsim.csv"))
 
 
     r=GtkEntry(); set_gtk_property!(r,:text,"0.01")
@@ -72,7 +78,8 @@ using LinearAlgebra
     ra=Gtk4.GtkCheckButton("Results available"); set_gtk_property!(ra,:active,false);
     in1=GtkButton("Select part file")
     in1a=GtkButton("Select sim file")
-    in3=GtkButton("Run with input files")
+    in3=GtkButton("Run")
+    in4=GtkButton("Continue")
     in2=GtkEntry(); set_gtk_property!(in2,:text,joinpath(mypath,"casefiles","part_description.csv"));
     in2a=GtkEntry(); set_gtk_property!(in2a,:text,joinpath(mypath,"casefiles","simulation_params.csv"));
 
@@ -215,9 +222,9 @@ using LinearAlgebra
     im4=Gtk4.GtkImage(joinpath(guipath,"figures","square_100x100px.png"))
     q=GtkButton("Quit")
 
+    if i_batch==0
                                                                                 g[6,1]=q
                                                                                 g[6,2]=im3
-    if i_batch==0
     g[1,3]=sm;g[2,3] = mf; g[3,3] = ps;  g[4,3] = pm;  g[5,3] = r1; 
                                          g[4,4] = mf3; g[5,4] = r2; 
                                          g[4,5] = mf2;  
@@ -255,6 +262,8 @@ using LinearAlgebra
     g[1,41]=seldir;  g[2,41] = a0_1; g[3,41] = a1_1; g[4,41] = a2_1; g[5,41] = a3_1; g[6,41] = a4_1; 
     g[1,42]=dir;
     elseif i_batch==1
+                                                                          g[6,1]=q
+                                                                          g[6,2]=im3        
         g[1,2] = in1;   g[2,2] = in2;  
         g[1,3] = in1a;  g[2,3] = in2a;
         g[1,4]=sm;g[2,4] = mf; g[3,4] = ps;  g[4,4] = pm;  g[5,4] = r1;  g[6,4] = r2;
@@ -264,6 +273,25 @@ using LinearAlgebra
         g[1,8] = par_0; g[2,8] = t;  g[3,8] = in3;                             g[6,8]=f11
         g[1,9]=ra; g[2,9]=pr;g[3,9]=pf1;
                g[2,10]=pr3;g[3,10]=tend;
+    elseif i_batch==2
+            g[1,1] = r1; g[2,1] = r2;                        g[4,1]=q
+            g[1,2] = inputfile1;   g[2,2] = inputfile2; g[3,2] = ph;     
+                                                        g[3,3] = ph2; 
+            g[1,4]=sm;g[2,4] = mf; g[3,4] = ps;  g[4,4] = pm;  
+                                   g[3,5] = ps1; g[4,5] = mf3; 
+                                   g[3,6] = ps2; g[4,6] = mf2; 
+
+            g[1,8] = par_0; g[2,8]=f11
+            g[1,9] = t;  g[2,9] = in3;  
+                         g[2,10] = in4;  
+
+                         g[2,11]=r;g[3,11]=sel; g[4,11]=si;
+                                                g[4,12]=ci;
+            
+            g[1,15]=pr;g[2,15]=pf1;  
+            g[1,16]=pr3;g[2,16]=tend;
+                                         
+                                        
     end
     
     g.column_homogeneous = true
@@ -271,6 +299,10 @@ using LinearAlgebra
     h[2,1]=g
 
     #callback functions
+    function inputfile1_clicked(w)
+        str = pick_file(mypath,filterlist="csv");
+        set_gtk_property!(inputfile2,:text,str);
+    end
     function sm_clicked(w)
         if i_mesh==1
             str = pick_file(mypath,filterlist="dat");
@@ -322,6 +354,24 @@ using LinearAlgebra
             meshfile=get_gtk_property(mf,:text,String);
             partfile=get_gtk_property(in2,:text,String);
             simfile=get_gtk_property(in2a,:text,String);
+            meshfilename_parts=splitpath(meshfile)
+            meshfilename_parts[end]="_" * meshfilename_parts[end]
+            writefilename=joinpath(meshfilename_parts)
+            _meshfile=writefilename
+            if isfile(_meshfile)
+                rm(_meshfile)
+            end
+            filename_parts=splitpath(meshfile)
+            _psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"_pset.csv")
+            __psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"__pset.csv")
+            if isfile(_psetfile)
+                mv(_psetfile,__psetfile,force=true) 
+            end
+        elseif i_batch==2
+            meshfile=get_gtk_property(mf,:text,String);
+            inputfilename=get_gtk_property(inputfile2,:text,String);
+            partfile=create_partfile(inputfilename)
+            simfile=create_simfile(inputfilename)
             meshfilename_parts=splitpath(meshfile)
             meshfilename_parts[end]="_" * meshfilename_parts[end]
             writefilename=joinpath(meshfilename_parts)
@@ -426,32 +476,6 @@ using LinearAlgebra
                                 push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str58,",",str59,",",str59a,",",str59b,",",str59c,",",str59d,",",str59e,",",str59f,",",str59g,",",str59h))
                             end
                         end
-
-                    #push!(notusedsets, "6")                
-                    #if patchtype1val==0 || patchtype1val==1 || patchtype1val==3
-                    #    push!(notusedsets, "2")
-                    #else
-                    #    patchtype="patch"
-                    #    push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str22,",","1e5"))
-                    #end
-                    #if patchtype2val==0 || patchtype2val==1 || patchtype2val==3
-                    #    push!(notusedsets, "3")
-                    #else
-                    #    patchtype="patch"
-                    #    push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str32,",","1e5"))
-                    #end
-                    #if patchtype3val==0 || patchtype3val==1 || patchtype3val==3
-                    #    push!(notusedsets, "4")
-                    #else
-                    #    patchtype="patch"
-                    #    push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str42,",","1e5"))
-                    #end
-                    #if patchtype4val==0 || patchtype4val==1 || patchtype4val==3
-                    #    push!(notusedsets, "5")
-                    #else
-                    #    patchtype="patch"
-                    #    push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str52,",","1e5"))
-                    #end
                 end
             end
             for line in lines
@@ -534,6 +558,10 @@ using LinearAlgebra
                 mv(__psetfile,_psetfile,force=true) 
             end
         elseif i_batch==1
+            if isfile(__psetfile)
+                mv(__psetfile,_psetfile,force=true) 
+            end
+        elseif i_batch==2
             if isfile(__psetfile)
                 mv(__psetfile,_psetfile,force=true) 
             end
@@ -679,7 +707,7 @@ using LinearAlgebra
     function ps_clicked(w)
         i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
         str0 = get_gtk_property(par_0,:text,String); 
-        str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String); str6 = get_gtk_property(par_4,:text,String); str7 = get_gtk_property(par_5,:text,String);
+        str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String); str6 = get_gtk_property(par_4,:text,String); str7 = get_gtk_property(par_5,:text,String);str8 = get_gtk_property(ps1,:text,String);
         str11 = get_gtk_property(p0_1,:text,String); str12 = get_gtk_property(p0_2,:text,String); str13 = get_gtk_property(p0_3,:text,String); str14 = get_gtk_property(p0_4,:text,String); str15 = get_gtk_property(p0_5,:text,String); str16 = get_gtk_property(p0_6,:text,String); str17 = get_gtk_property(p0_7,:text,String); str18 = get_gtk_property(p0_8,:text,String); str19 = get_gtk_property(p0_9,:text,String);
         str21 = get_gtk_property(p1_1,:text,String); str22 = get_gtk_property(p1_2,:text,String); str23 = get_gtk_property(p1_3,:text,String); str24 = get_gtk_property(p1_4,:text,String); str25 = get_gtk_property(p1_5,:text,String); str26 = get_gtk_property(p1_6,:text,String); str27 = get_gtk_property(p1_7,:text,String); str28 = get_gtk_property(p1_8,:text,String); str29 = get_gtk_property(p1_9,:text,String);
         str31 = get_gtk_property(p2_1,:text,String); str32 = get_gtk_property(p2_2,:text,String); str33 = get_gtk_property(p2_3,:text,String); str34 = get_gtk_property(p2_4,:text,String); str35 = get_gtk_property(p2_5,:text,String); str36 = get_gtk_property(p2_6,:text,String); str37 = get_gtk_property(p2_7,:text,String); str38 = get_gtk_property(p2_8,:text,String); str39 = get_gtk_property(p2_9,:text,String);
@@ -705,6 +733,24 @@ using LinearAlgebra
             meshfile=get_gtk_property(mf,:text,String);
             partfile=get_gtk_property(in2,:text,String);
             simfile=get_gtk_property(in2a,:text,String);
+            meshfilename_parts=splitpath(meshfile)
+            meshfilename_parts[end]="_" * meshfilename_parts[end]
+            writefilename=joinpath(meshfilename_parts)
+            _meshfile=writefilename
+            if isfile(_meshfile)
+                rm(_meshfile)
+            end
+            filename_parts=splitpath(meshfile)
+            _psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"_pset.csv")
+            __psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"__pset.csv")
+            if isfile(_psetfile)
+                mv(_psetfile,__psetfile,force=true) 
+            end
+        elseif i_batch==2          
+            meshfile=get_gtk_property(mf,:text,String);
+            inputfilename=get_gtk_property(inputfile2,:text,String);
+            partfile=create_partfile(inputfilename)
+            simfile=create_simfile(inputfilename)     
             meshfilename_parts=splitpath(meshfile)
             meshfilename_parts[end]="_" * meshfilename_parts[end]
             writefilename=joinpath(meshfilename_parts)
@@ -887,6 +933,10 @@ using LinearAlgebra
             if isfile(__psetfile)
                 mv(__psetfile,_psetfile,force=true) 
             end
+        elseif i_batch==2
+            if isfile(__psetfile)
+                mv(__psetfile,_psetfile,force=true) 
+            end
         end
 
         hdf_path=joinpath(mypath,"_data.h5")
@@ -911,7 +961,11 @@ using LinearAlgebra
             zvec1=Array{Float64}(undef, M)
             cgammavec=Array{Float64}(undef, 3, N)
             cgammavec_bw=Array{Float64}(undef, 3, N)
-        
+            thickness_out=0.0
+            porosity_out=0.0
+            permeability_out=0.0
+            alpha_out=0.0
+            celltype_out=0;
         
             for cid in 1:N
                 points::Vector{Point2f} = []
@@ -939,11 +993,33 @@ using LinearAlgebra
         
             #gamma = read_dataset(meshfile["properties"], "volume")
             gamma = read_dataset(meshfile["properties"], "part_id")
+            gamma1 = read_dataset(meshfile["properties"], "thickness") 
+            gamma2 = read_dataset(meshfile["properties"], "porosity") 
+            gamma3 = read_dataset(meshfile["properties"], "permeability") 
+            gamma4 = read_dataset(meshfile["properties"], "alpha") 
+            gamma5 = read_dataset(meshfile["properties"], "type") 
         
             for cid in 1:N
                 for j in 1:3
-                    cgammavec[j,cid]=gamma[cid]
-                    cgammavec_bw[j,cid]=gamma[cid]
+                    if i_batch==2 
+                        gamma_val1=gamma[cid]
+                        ps1_id = parse(Int,get_gtk_property(ps1,:text,String))  
+                        if gamma_val1==ps1_id
+                            cgammavec[j,cid]=1
+                            cgammavec_bw[j,cid]=1
+                            thickness_out=gamma1[cid]
+                            porosity_out=gamma2[cid]
+                            permeability_out=gamma3[cid]
+                            alpha_out=gamma4[cid]
+                            celltype_out=gamma5[cid]
+                        else
+                            cgammavec[j,cid]=0
+                            cgammavec_bw[j,cid]=0
+                        end
+                    else
+                        cgammavec[j,cid]=gamma[cid]
+                        cgammavec_bw[j,cid]=gamma[cid]
+                    end
                 end
             end
             
@@ -980,14 +1056,43 @@ using LinearAlgebra
             minval=minval-deltaval        
             resolution_val = 800  #1200
             empty!(ax1)    
-            p1 = poly!(connect(xyz, GeometryBasics.Point{3}), connect(1:3*N, TriangleFace); color=cgammavec[:], strokewidth=1,colorrange=(1,5))
-            fig1=current_figure();
-            [delete!(col1) for col1 in fig1.content if col1 isa Colorbar]
-            col1=Colorbar(fig1, colormap = :viridis,  vertical=true, height=Relative(0.5),colorrange=(1,5));  
+
+            if i_batch==2 
+                p1 = poly!(connect(xyz, GeometryBasics.Point{3}), connect(1:3*N, TriangleFace); color=cgammavec[:], strokewidth=1,colorrange=(0,1))
+                fig1=current_figure();
+                [delete!(col1) for col1 in fig1.content if col1 isa Colorbar]
+                #col1=Colorbar(fig1, colormap = :viridis,  vertical=true, height=Relative(0.5),colorrange=(0,1));  
+                if Int(celltype_out)==-1  #inlet
+                    set_gtk_property!(ps2,:text, "Inlet" )
+                elseif Int(celltype_out)==-2  #outlet
+                    set_gtk_property!(ps2,:text, "Outlet" )
+                else
+                    if maximum([thickness_out,porosity_out,permeability_out,alpha_out])<=0.0
+                        set_gtk_property!(ps2,:text, "")
+                    else
+                        set_gtk_property!(ps2,:text, string(string(round(thickness_out*10000)/10000),", ",string(round(porosity_out*1000)/1000),", ",string(round(permeability_out*1e10*10000)/10000),"e-10, ",string(round(alpha_out*1000)/1000) ) )
+                    end
+                end
+            else
+                p1 = poly!(connect(xyz, GeometryBasics.Point{3}), connect(1:3*N, TriangleFace); color=cgammavec[:], strokewidth=1,colorrange=(1,5))
+                fig1=current_figure();
+                [delete!(col1) for col1 in fig1.content if col1 isa Colorbar]
+                col1=Colorbar(fig1, colormap = :viridis,  vertical=true, height=Relative(0.5),colorrange=(1,5));  
+            end
                   
         end
         rm(hdf_path)       
     end
+
+    function ph_clicked(w)
+        if i_batch==2          
+            inputfilename=get_gtk_property(inputfile2,:text,String);
+            line2 = readlines(inputfilename)[2]
+            line2_string = join(strip.(split(line2, ",")), ", ")
+            set_gtk_property!(ph2,:text, line2_string )
+        end  
+    end
+
     function sel_clicked(w)
         str0 = get_gtk_property(par_0,:text,String); 
         str1 = get_gtk_property(mf,:text,String); str2 = get_gtk_property(t,:text,String); str3 = get_gtk_property(par_3,:text,String); str4 = get_gtk_property(par_1,:text,String); str5 = get_gtk_property(par_2,:text,String); str6 = get_gtk_property(par_4,:text,String); str7 = get_gtk_property(par_5,:text,String);
@@ -1010,65 +1115,85 @@ using LinearAlgebra
         i_var=0
 
 
-        partfile = joinpath(mypath,"_part_description.csv")
-        writefilename=partfile
-        touch(writefilename)
-        wfn = open(writefilename,"w")  
-        lines=String[]
-        notusedsets = Vector{String}()
-        i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
-        if i_model==1 || i_model==2 || i_model==3
-            push!(lines,"name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z")
-            push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
-            push!(notusedsets, "2")
-            push!(notusedsets, "3")
-            push!(notusedsets, "4")
-            push!(notusedsets, "5")
-			push!(notusedsets, "6")
-        end
-        for line in lines
-            println(wfn,line)
-        end
-        close(wfn)
-
-        meshfile = str1
-        meshfilename_parts=splitpath(meshfile)
-        meshfilename_parts[end]="_" * meshfilename_parts[end]
-        writefilename=joinpath(meshfilename_parts)
-        _meshfile=writefilename
-        len_out=length(notusedsets)
-        notusedsets_out=String[]        
-        if len_out>=1
+        if i_batch==2
+            meshfile=get_gtk_property(mf,:text,String);
+            inputfilename=get_gtk_property(inputfile2,:text,String);
+            partfile=create_partfile(inputfilename)
+            simfile=create_simfile(inputfilename)
+            meshfilename_parts=splitpath(meshfile)
+            meshfilename_parts[end]="_" * meshfilename_parts[end]
+            writefilename=joinpath(meshfilename_parts)
+            _meshfile=writefilename
+            if isfile(_meshfile)
+                rm(_meshfile)
+            end
+            filename_parts=splitpath(meshfile)
+            _psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"_pset.csv")
+            __psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"__pset.csv")
+            if isfile(_psetfile)
+                mv(_psetfile,__psetfile,force=true) 
+            end
+        elseif i_batch==0
+            partfile = joinpath(mypath,"_part_description.csv")
+            writefilename=partfile
             touch(writefilename)
             wfn = open(writefilename,"w")  
-            for i_out in 1:len_out
-                if i_out==1
-                    notusedsets_out=notusedsets[i_out]
-                else
-                    notusedsets_out=notusedsets_out * "," * notusedsets[i_out] 
-                end
+            lines=String[]
+            notusedsets = Vector{String}()
+            i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
+            if i_model==1 || i_model==2 || i_model==3
+                push!(lines,"name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z")
+                push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
+                push!(notusedsets, "2")
+                push!(notusedsets, "3")
+                push!(notusedsets, "4")
+                push!(notusedsets, "5")
+                push!(notusedsets, "6")
             end
-            println(wfn,notusedsets_out)
+            for line in lines
+                println(wfn,line)
+            end
             close(wfn)
-        else
-            if isfile(writefilename)
-                rm(writefilename)
-            end
-        end       
 
-        simfile = joinpath(mypath,"_simulation_params.csv")
-        writefilename=simfile
-        touch(writefilename)
-        wfn = open(writefilename,"w")  
-        lines=String[]
-        if i_model==1 || i_model==2 || i_model==3
-            push!(lines,"p_ref,rho_ref,gamma,mu_resin,p_a,p_init,rho_0_air,rho_0_oil")
-            push!(lines,string("1.01325e5,1.225,1.4,",str3,",",str4,",",str5,",",str6,",",str7))
+            meshfile = str1
+            meshfilename_parts=splitpath(meshfile)
+            meshfilename_parts[end]="_" * meshfilename_parts[end]
+            writefilename=joinpath(meshfilename_parts)
+            _meshfile=writefilename
+            len_out=length(notusedsets)
+            notusedsets_out=String[]        
+            if len_out>=1
+                touch(writefilename)
+                wfn = open(writefilename,"w")  
+                for i_out in 1:len_out
+                    if i_out==1
+                        notusedsets_out=notusedsets[i_out]
+                    else
+                        notusedsets_out=notusedsets_out * "," * notusedsets[i_out] 
+                    end
+                end
+                println(wfn,notusedsets_out)
+                close(wfn)
+            else
+                if isfile(writefilename)
+                    rm(writefilename)
+                end
+            end       
+
+            simfile = joinpath(mypath,"_simulation_params.csv")
+            writefilename=simfile
+            touch(writefilename)
+            wfn = open(writefilename,"w")  
+            lines=String[]
+            if i_model==1 || i_model==2 || i_model==3
+                push!(lines,"p_ref,rho_ref,gamma,mu_resin,p_a,p_init,rho_0_air,rho_0_oil")
+                push!(lines,string("1.01325e5,1.225,1.4,",str3,",",str4,",",str5,",",str6,",",str7))
+            end
+            for line in lines
+                println(wfn,line)
+            end
+            close(wfn)
         end
-        for line in lines
-            println(wfn,line)
-        end
-        close(wfn)
 
         savepath = mypath   
         t_max = parse(Float64,get_gtk_property(t,:text,String))  #100.
@@ -1648,158 +1773,171 @@ using LinearAlgebra
         modelval=parse(Int64,str0);
         if f11.selected==0; i_advanced=Int64(0); elseif f11.selected==1; i_advanced=Int64(1); elseif f11.selected==2; i_advanced=Int64(2); end
 
-        if patchtype1val==1;
-		    #f1.selected = 0
-		    patchtype1val=Int64(0)
-	    end
-		if patchtype2val==1;
-		    #f2.selected = 0
-		    patchtype2val=Int64(0)
-	    end
-		if patchtype3val==1;
-		    #f3.selected = 0
-		    patchtype3val=Int64(0)
-	    end
-		if patchtype4val==1;
-		    #f4.selected = 0
-		    patchtype4val=Int64(0)
-	    end
+        if i_batch==2
+            savepath = mypath   #with trailing /
+            meshfile = get_gtk_property(mf,:text,String)
+            if i_batch==1
+                partfile = get_gtk_property(in2,:text,String)
+                simfile = get_gtk_property(in2a,:text,String) 
+            elseif i_batch==2
+                inputfilename=get_gtk_property(inputfile2,:text,String);
+                partfile=create_partfile(inputfilename)
+                simfile=create_simfile(inputfilename)
+            end
+        elseif i_batch==1
+            if patchtype1val==1;
+                #f1.selected = 0
+                patchtype1val=Int64(0)
+            end
+            if patchtype2val==1;
+                #f2.selected = 0
+                patchtype2val=Int64(0)
+            end
+            if patchtype3val==1;
+                #f3.selected = 0
+                patchtype3val=Int64(0)
+            end
+            if patchtype4val==1;
+                #f4.selected = 0
+                patchtype4val=Int64(0)
+            end
 
-        partfile = joinpath(mypath,"_part_description.csv")
-        writefilename=partfile
-        touch(writefilename)
-        wfn = open(writefilename,"w")  
-        lines=String[]
-        notusedsets = Vector{String}()
-        i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
-        if i_model==1 || i_model==2 || i_model==3
-            push!(lines,"name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z")
-            if i_model==1 || i_model==2
-                push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
-            elseif i_model==3
-                push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
-            end
-            if patchtype1val==0
-                push!(notusedsets, "2")
-            else
-                if patchtype1val==1
-                    patchtype="inlet"
-                    str21=str11
-                    if i_model==3; str29e=str19e; end
-                elseif patchtype1val==2
-                    patchtype="patch"
-                elseif patchtype1val==3
-                    patchtype="outlet"
-                end
-                if i_model==1 || i_model==2
-                    push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str22,",","0.5e5",",",str22,",","1e5",",","0.0",",",str23,",","0.0",",",str22,",",str23,",",str23))
-                elseif i_model==3
-                    push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str28,",",str29,",",str29a,",",str29b,",",str29c,",",str29d,",",str29e,",",str29f,",",str29g,",",str29h))
-                end
-            end
-            if patchtype2val==0
-                push!(notusedsets, "3")
-            else
-                if patchtype2val==1
-                    patchtype="inlet"
-                    str31=str11
-                    if i_model==3; str39e=str19e; end
-                elseif patchtype2val==2
-                    patchtype="patch"
-                elseif patchtype2val==3
-                    patchtype="outlet"
-                end
-                if i_model==1 || i_model==2
-                    push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str32,",","0.5e5",",",str32,",","1e5",",","0.0",",",str33,",","0.0",",",str32,",",str33,",",str33))
-                elseif i_model==3
-                    push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str38,",",str39,",",str39a,",",str39b,",",str39c,",",str39d,",",str39e,",",str39f,",",str39g,",",str39h))
-                end
-            end
-            if patchtype3val==0
-                push!(notusedsets, "4")
-            else
-                if patchtype3val==1
-                    patchtype="inlet"
-                    str41=str11
-                    if i_model==3; str49e=str19e; end
-                elseif patchtype3val==2
-                    patchtype="patch"
-                elseif patchtype3val==3
-                    patchtype="outlet"
-                end
-                if i_model==1 || i_model==2
-                    push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str42,",","0.5e5",",",str42,",","1e5",",","0.0",",",str43,",","0.0",",",str42,",",str43,",",str43))
-                elseif i_model==3
-                    push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str48,",",str49,",",str49a,",",str49b,",",str49c,",",str49d,",",str49e,",",str49f,",",str49g,",",str49h))
-                end
-            end
-            if patchtype4val==0
-                push!(notusedsets, "5")
-            else
-                if patchtype4val==1
-                    patchtype="inlet"
-                    str51=str11
-                    if i_model==3; str59e=str19e; end
-                elseif patchtype4val==2
-                    patchtype="patch"
-                elseif patchtype4val==3
-                    patchtype="outlet"
-                end
-                if i_model==1 || i_model==2
-                    push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str52,",","0.5e5",",",str52,",","1e5",",","0.0",",",str53,",","0.0",",",str52,",",str53,",",str53))
-                elseif i_model==3
-                    push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str58,",",str59,",",str59a,",",str59b,",",str59c,",",str59d,",",str59e,",",str59f,",",str59g,",",str59h))
-                end
-            end            
-            if i_model==1 || i_model==2
-                push!(lines,string("interactive_inlet,inlet,6,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
-            elseif i_model==3
-                push!(lines,string("interactive_inlet,inlet,6,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
-            end
-        end
-        for line in lines
-            println(wfn,line)
-        end
-        close(wfn)
-
-        meshfile = str1
-        meshfilename_parts=splitpath(meshfile)
-        meshfilename_parts[end]="_" * meshfilename_parts[end]
-        writefilename=joinpath(meshfilename_parts)
-        _meshfile=writefilename
-        len_out=length(notusedsets)
-        notusedsets_out=String[]        
-        if len_out>=1
+            partfile = joinpath(mypath,"_part_description.csv")
+            writefilename=partfile
             touch(writefilename)
             wfn = open(writefilename,"w")  
-            for i_out in 1:len_out
-                if i_out==1
-                    notusedsets_out=notusedsets[i_out]
+            lines=String[]
+            notusedsets = Vector{String}()
+            i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
+            if i_model==1 || i_model==2 || i_model==3
+                push!(lines,"name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z")
+                if i_model==1 || i_model==2
+                    push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
+                elseif i_model==3
+                    push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+                end
+                if patchtype1val==0
+                    push!(notusedsets, "2")
                 else
-                    notusedsets_out=notusedsets_out * "," * notusedsets[i_out] 
+                    if patchtype1val==1
+                        patchtype="inlet"
+                        str21=str11
+                        if i_model==3; str29e=str19e; end
+                    elseif patchtype1val==2
+                        patchtype="patch"
+                    elseif patchtype1val==3
+                        patchtype="outlet"
+                    end
+                    if i_model==1 || i_model==2
+                        push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str22,",","0.5e5",",",str22,",","1e5",",","0.0",",",str23,",","0.0",",",str22,",",str23,",",str23))
+                    elseif i_model==3
+                        push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str28,",",str29,",",str29a,",",str29b,",",str29c,",",str29d,",",str29e,",",str29f,",",str29g,",",str29h))
+                    end
+                end
+                if patchtype2val==0
+                    push!(notusedsets, "3")
+                else
+                    if patchtype2val==1
+                        patchtype="inlet"
+                        str31=str11
+                        if i_model==3; str39e=str19e; end
+                    elseif patchtype2val==2
+                        patchtype="patch"
+                    elseif patchtype2val==3
+                        patchtype="outlet"
+                    end
+                    if i_model==1 || i_model==2
+                        push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str32,",","0.5e5",",",str32,",","1e5",",","0.0",",",str33,",","0.0",",",str32,",",str33,",",str33))
+                    elseif i_model==3
+                        push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str38,",",str39,",",str39a,",",str39b,",",str39c,",",str39d,",",str39e,",",str39f,",",str39g,",",str39h))
+                    end
+                end
+                if patchtype3val==0
+                    push!(notusedsets, "4")
+                else
+                    if patchtype3val==1
+                        patchtype="inlet"
+                        str41=str11
+                        if i_model==3; str49e=str19e; end
+                    elseif patchtype3val==2
+                        patchtype="patch"
+                    elseif patchtype3val==3
+                        patchtype="outlet"
+                    end
+                    if i_model==1 || i_model==2
+                        push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str42,",","0.5e5",",",str42,",","1e5",",","0.0",",",str43,",","0.0",",",str42,",",str43,",",str43))
+                    elseif i_model==3
+                        push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str48,",",str49,",",str49a,",",str49b,",",str49c,",",str49d,",",str49e,",",str49f,",",str49g,",",str49h))
+                    end
+                end
+                if patchtype4val==0
+                    push!(notusedsets, "5")
+                else
+                    if patchtype4val==1
+                        patchtype="inlet"
+                        str51=str11
+                        if i_model==3; str59e=str19e; end
+                    elseif patchtype4val==2
+                        patchtype="patch"
+                    elseif patchtype4val==3
+                        patchtype="outlet"
+                    end
+                    if i_model==1 || i_model==2
+                        push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str52,",","0.5e5",",",str52,",","1e5",",","0.0",",",str53,",","0.0",",",str52,",",str53,",",str53))
+                    elseif i_model==3
+                        push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str58,",",str59,",",str59a,",",str59b,",",str59c,",",str59d,",",str59e,",",str59f,",",str59g,",",str59h))
+                    end
+                end            
+                if i_model==1 || i_model==2
+                    push!(lines,string("interactive_inlet,inlet,6,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
+                elseif i_model==3
+                    push!(lines,string("interactive_inlet,inlet,6,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
                 end
             end
-            println(wfn,notusedsets_out)
-            close(wfn)
-        else
-            if isfile(writefilename)
-                rm(writefilename)
+            for line in lines
+                println(wfn,line)
             end
-        end       
+            close(wfn)
 
-        simfile = joinpath(mypath,"_simulation_params.csv")
-        writefilename=simfile
-        touch(writefilename)
-        wfn = open(writefilename,"w")  
-        lines=String[]
-        if i_model==1 || i_model==2 || i_model==3
-            push!(lines,"p_ref,rho_ref,gamma,mu_resin,p_a,p_init,rho_0_air,rho_0_oil")
-            push!(lines,string("1.01325e5,1.225,1.4,",str3,",",str4,",",str5,",",str6,",",str7))
+            meshfile = str1
+            meshfilename_parts=splitpath(meshfile)
+            meshfilename_parts[end]="_" * meshfilename_parts[end]
+            writefilename=joinpath(meshfilename_parts)
+            _meshfile=writefilename
+            len_out=length(notusedsets)
+            notusedsets_out=String[]        
+            if len_out>=1
+                touch(writefilename)
+                wfn = open(writefilename,"w")  
+                for i_out in 1:len_out
+                    if i_out==1
+                        notusedsets_out=notusedsets[i_out]
+                    else
+                        notusedsets_out=notusedsets_out * "," * notusedsets[i_out] 
+                    end
+                end
+                println(wfn,notusedsets_out)
+                close(wfn)
+            else
+                if isfile(writefilename)
+                    rm(writefilename)
+                end
+            end       
+
+            simfile = joinpath(mypath,"_simulation_params.csv")
+            writefilename=simfile
+            touch(writefilename)
+            wfn = open(writefilename,"w")  
+            lines=String[]
+            if i_model==1 || i_model==2 || i_model==3
+                push!(lines,"p_ref,rho_ref,gamma,mu_resin,p_a,p_init,rho_0_air,rho_0_oil")
+                push!(lines,string("1.01325e5,1.225,1.4,",str3,",",str4,",",str5,",",str6,",",str7))
+            end
+            for line in lines
+                println(wfn,line)
+            end
+            close(wfn)
         end
-        for line in lines
-            println(wfn,line)
-        end
-        close(wfn)
 
         savepath = mypath   
         t_max = parse(Float64,get_gtk_property(t,:text,String))  #100.
@@ -1815,14 +1953,16 @@ using LinearAlgebra
 
         LCMsim_v3.create_and_solve(savepath,meshfile,partfile,simfile,modeltype,i_advanced,t_max,t_step,LCMsim_v3.verbose,true,true)
         
-        if isfile(_meshfile)
-            rm(_meshfile)
-        end
-        if isfile(partfile)
-            rm(partfile)
-        end
-        if isfile(simfile)
-            rm(simfile)
+        if i_batch==0
+            if isfile(_meshfile)
+                rm(_meshfile)
+            end
+            if isfile(partfile)
+                rm(partfile)
+            end
+            if isfile(simfile)
+                rm(simfile)
+            end
         end
     end
     function ci_clicked(w)
@@ -1850,158 +1990,171 @@ using LinearAlgebra
         modelval=parse(Int64,str0);
         if f11.selected==0; i_advanced=Int64(0); elseif f11.selected==1; i_advanced=Int64(1); elseif f11.selected==2; i_advanced=Int64(2); end
 
-        if patchtype1val==1;
-		    #f1.selected = 0
-		    patchtype1val=Int64(0)
-	    end
-		if patchtype2val==1;
-		    #f2.selected = 0
-		    patchtype2val=Int64(0)
-	    end
-		if patchtype3val==1;
-		    #f3.selected = 0
-		    patchtype3val=Int64(0)
-	    end
-		if patchtype4val==1;
-		    #f4.selected = 0
-		    patchtype4val=Int64(0)
-	    end
-		
-        partfile = joinpath(mypath,"_part_description.csv")
-        writefilename=partfile
-        touch(writefilename)
-        wfn = open(writefilename,"w")  
-        lines=String[]
-        notusedsets = Vector{String}()
-        i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
-        if i_model==1 || i_model==2 || i_model==3
-            push!(lines,"name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z")
-            if i_model==1 || i_model==2
-                push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
-            elseif i_model==3
-                push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+        if i_batch==2
+            savepath = mypath   #with trailing /
+            meshfile = get_gtk_property(mf,:text,String)
+            if i_batch==1
+                partfile = get_gtk_property(in2,:text,String)
+                simfile = get_gtk_property(in2a,:text,String) 
+            elseif i_batch==2
+                inputfilename=get_gtk_property(inputfile2,:text,String);
+                partfile=create_partfile(inputfilename)
+                simfile=create_simfile(inputfilename)
             end
-            if patchtype1val==0
-                push!(notusedsets, "2")
-            else
-                if patchtype1val==1
-                    patchtype="inlet"
-                    str21=str11
-                    if i_model==3; str29e=str19e; end
-                elseif patchtype1val==2
-                    patchtype="patch"
-                elseif patchtype1val==3
-                    patchtype="outlet"
-                end
-                if i_model==1 || i_model==2
-                    push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str22,",","0.5e5",",",str22,",","1e5",",","0.0",",",str23,",","0.0",",",str22,",",str23,",",str23))
-                elseif i_model==3
-                    push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str28,",",str29,",",str29a,",",str29b,",",str29c,",",str29d,",",str29e,",",str29f,",",str29g,",",str29h))
-                end
+        elseif i_batch==1
+            if patchtype1val==1;
+                #f1.selected = 0
+                patchtype1val=Int64(0)
             end
-            if patchtype2val==0
-                push!(notusedsets, "3")
-            else
-                if patchtype2val==1
-                    patchtype="inlet"
-                    str31=str11
-                    if i_model==3; str39e=str19e; end
-                elseif patchtype2val==2
-                    patchtype="patch"
-                elseif patchtype2val==3
-                    patchtype="outlet"
-                end
-                if i_model==1 || i_model==2
-                    push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str32,",","0.5e5",",",str32,",","1e5",",","0.0",",",str33,",","0.0",",",str32,",",str33,",",str33))
-                elseif i_model==3
-                    push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str38,",",str39,",",str39a,",",str39b,",",str39c,",",str39d,",",str39e,",",str39f,",",str39g,",",str39h))
-                end
+            if patchtype2val==1;
+                #f2.selected = 0
+                patchtype2val=Int64(0)
             end
-            if patchtype3val==0
-                push!(notusedsets, "4")
-            else
-                if patchtype3val==1
-                    patchtype="inlet"
-                    str41=str11
-                    if i_model==3; str49e=str19e; end
-                elseif patchtype3val==2
-                    patchtype="patch"
-                elseif patchtype3val==3
-                    patchtype="outlet"
-                end
-                if i_model==1 || i_model==2
-                    push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str42,",","0.5e5",",",str42,",","1e5",",","0.0",",",str43,",","0.0",",",str42,",",str43,",",str43))
-                elseif i_model==3
-                    push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str48,",",str49,",",str49a,",",str49b,",",str49c,",",str49d,",",str49e,",",str49f,",",str49g,",",str49h))
-                end
+            if patchtype3val==1;
+                #f3.selected = 0
+                patchtype3val=Int64(0)
             end
-            if patchtype4val==0
-                push!(notusedsets, "5")
-            else
-                if patchtype4val==1
-                    patchtype="inlet"
-                    str51=str11
-                    if i_model==3; str59e=str19e; end
-                elseif patchtype4val==2
-                    patchtype="patch"
-                elseif patchtype4val==3
-                    patchtype="outlet"
-                end
-                if i_model==1 || i_model==2
-                    push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str52,",","0.5e5",",",str52,",","1e5",",","0.0",",",str53,",","0.0",",",str52,",",str53,",",str53))
-                elseif i_model==3
-                    push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str58,",",str59,",",str59a,",",str59b,",",str59c,",",str59d,",",str59e,",",str59f,",",str59g,",",str59h))
-                end
-            end            
-            if i_model==1 || i_model==2
-                push!(lines,string("interactive_inlet,inlet,6,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
-            elseif i_model==3
-                push!(lines,string("interactive_inlet,inlet,6,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
+            if patchtype4val==1;
+                #f4.selected = 0
+                patchtype4val=Int64(0)
             end
-        end
-        for line in lines
-            println(wfn,line)
-        end
-        close(wfn)
-
-        meshfile = str1
-        meshfilename_parts=splitpath(meshfile)
-        meshfilename_parts[end]="_" * meshfilename_parts[end]
-        writefilename=joinpath(meshfilename_parts)
-        _meshfile=writefilename
-        len_out=length(notusedsets)
-        notusedsets_out=String[]        
-        if len_out>=1
+            
+            partfile = joinpath(mypath,"_part_description.csv")
+            writefilename=partfile
             touch(writefilename)
             wfn = open(writefilename,"w")  
-            for i_out in 1:len_out
-                if i_out==1
-                    notusedsets_out=notusedsets[i_out]
+            lines=String[]
+            notusedsets = Vector{String}()
+            i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
+            if i_model==1 || i_model==2 || i_model==3
+                push!(lines,"name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z")
+                if i_model==1 || i_model==2
+                    push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
+                elseif i_model==3
+                    push!(lines,string("base,base,1,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+                end
+                if patchtype1val==0
+                    push!(notusedsets, "2")
                 else
-                    notusedsets_out=notusedsets_out * "," * notusedsets[i_out] 
+                    if patchtype1val==1
+                        patchtype="inlet"
+                        str21=str11
+                        if i_model==3; str29e=str19e; end
+                    elseif patchtype1val==2
+                        patchtype="patch"
+                    elseif patchtype1val==3
+                        patchtype="outlet"
+                    end
+                    if i_model==1 || i_model==2
+                        push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str22,",","0.5e5",",",str22,",","1e5",",","0.0",",",str23,",","0.0",",",str22,",",str23,",",str23))
+                    elseif i_model==3
+                        push!(lines,string("patch1,", patchtype,",2,",str21,",",str22,",0.0,",str23,",0.0,",str24,",",str25,",",str26,",",str27,",",str28,",",str29,",",str29a,",",str29b,",",str29c,",",str29d,",",str29e,",",str29f,",",str29g,",",str29h))
+                    end
+                end
+                if patchtype2val==0
+                    push!(notusedsets, "3")
+                else
+                    if patchtype2val==1
+                        patchtype="inlet"
+                        str31=str11
+                        if i_model==3; str39e=str19e; end
+                    elseif patchtype2val==2
+                        patchtype="patch"
+                    elseif patchtype2val==3
+                        patchtype="outlet"
+                    end
+                    if i_model==1 || i_model==2
+                        push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str32,",","0.5e5",",",str32,",","1e5",",","0.0",",",str33,",","0.0",",",str32,",",str33,",",str33))
+                    elseif i_model==3
+                        push!(lines,string("patch2,", patchtype,",3,",str31,",",str32,",0.0,",str33,",0.0,",str34,",",str35,",",str36,",",str37,",",str38,",",str39,",",str39a,",",str39b,",",str39c,",",str39d,",",str39e,",",str39f,",",str39g,",",str39h))
+                    end
+                end
+                if patchtype3val==0
+                    push!(notusedsets, "4")
+                else
+                    if patchtype3val==1
+                        patchtype="inlet"
+                        str41=str11
+                        if i_model==3; str49e=str19e; end
+                    elseif patchtype3val==2
+                        patchtype="patch"
+                    elseif patchtype3val==3
+                        patchtype="outlet"
+                    end
+                    if i_model==1 || i_model==2
+                        push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str42,",","0.5e5",",",str42,",","1e5",",","0.0",",",str43,",","0.0",",",str42,",",str43,",",str43))
+                    elseif i_model==3
+                        push!(lines,string("patch3,", patchtype,",4,",str41,",",str42,",0.0,",str43,",0.0,",str44,",",str45,",",str46,",",str47,",",str48,",",str49,",",str49a,",",str49b,",",str49c,",",str49d,",",str49e,",",str49f,",",str49g,",",str49h))
+                    end
+                end
+                if patchtype4val==0
+                    push!(notusedsets, "5")
+                else
+                    if patchtype4val==1
+                        patchtype="inlet"
+                        str51=str11
+                        if i_model==3; str59e=str19e; end
+                    elseif patchtype4val==2
+                        patchtype="patch"
+                    elseif patchtype4val==3
+                        patchtype="outlet"
+                    end
+                    if i_model==1 || i_model==2
+                        push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str52,",","0.5e5",",",str52,",","1e5",",","0.0",",",str53,",","0.0",",",str52,",",str53,",",str53))
+                    elseif i_model==3
+                        push!(lines,string("patch4,", patchtype,",5,",str51,",",str52,",0.0,",str53,",0.0,",str54,",",str55,",",str56,",",str57,",",str58,",",str59,",",str59a,",",str59b,",",str59c,",",str59d,",",str59e,",",str59f,",",str59g,",",str59h))
+                    end
+                end            
+                if i_model==1 || i_model==2
+                    push!(lines,string("interactive_inlet,inlet,6,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str12,",","0.5e5",",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
+                elseif i_model==3
+                    push!(lines,string("interactive_inlet,inlet,6,",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str12,",","1e5",",","0.0",",",str13,",","0.0",",",str12,",",str13,",",str13))
                 end
             end
-            println(wfn,notusedsets_out)
-            close(wfn)
-        else
-            if isfile(writefilename)
-                rm(writefilename)
+            for line in lines
+                println(wfn,line)
             end
-        end       
+            close(wfn)
 
-        simfile = joinpath(mypath,"_simulation_params.csv")
-        writefilename=simfile
-        touch(writefilename)
-        wfn = open(writefilename,"w")  
-        lines=String[]
-        if i_model==1 || i_model==2 || i_model==3
-            push!(lines,"p_ref,rho_ref,gamma,mu_resin,p_a,p_init,rho_0_air,rho_0_oil")
-            push!(lines,string("1.01325e5,1.225,1.4,",str3,",",str4,",",str5,",",str6,",",str7))
+            meshfile = str1
+            meshfilename_parts=splitpath(meshfile)
+            meshfilename_parts[end]="_" * meshfilename_parts[end]
+            writefilename=joinpath(meshfilename_parts)
+            _meshfile=writefilename
+            len_out=length(notusedsets)
+            notusedsets_out=String[]        
+            if len_out>=1
+                touch(writefilename)
+                wfn = open(writefilename,"w")  
+                for i_out in 1:len_out
+                    if i_out==1
+                        notusedsets_out=notusedsets[i_out]
+                    else
+                        notusedsets_out=notusedsets_out * "," * notusedsets[i_out] 
+                    end
+                end
+                println(wfn,notusedsets_out)
+                close(wfn)
+            else
+                if isfile(writefilename)
+                    rm(writefilename)
+                end
+            end       
+
+            simfile = joinpath(mypath,"_simulation_params.csv")
+            writefilename=simfile
+            touch(writefilename)
+            wfn = open(writefilename,"w")  
+            lines=String[]
+            if i_model==1 || i_model==2 || i_model==3
+                push!(lines,"p_ref,rho_ref,gamma,mu_resin,p_a,p_init,rho_0_air,rho_0_oil")
+                push!(lines,string("1.01325e5,1.225,1.4,",str3,",",str4,",",str5,",",str6,",",str7))
+            end
+            for line in lines
+                println(wfn,line)
+            end
+            close(wfn)
         end
-        for line in lines
-            println(wfn,line)
-        end
-        close(wfn)
 
         savepath = mypath   
         t_max = parse(Float64,get_gtk_property(t,:text,String))  #100.
@@ -2016,20 +2169,31 @@ using LinearAlgebra
 
         sourcepath=joinpath(savepath,"data.jld2")
         output_intervals=16
-        LCMsim_v3.continue_and_solve(sourcepath,savepath,meshfile,partfile,simfile,modeltype,t_max,output_intervals,LCMsim_v3.verbose,true,true)
+        LCMsim_v3.continue_and_solve(sourcepath,savepath,meshfile,partfile,simfile,modeltype,i_advanced,t_max,output_intervals,LCMsim_v3.verbose,true,true)
         
-        if isfile(_meshfile)
-            rm(_meshfile)
-        end
-        if isfile(partfile)
-            rm(partfile)
-        end
-        if isfile(simfile)
-            rm(simfile)
+        if i_batch==0
+            if isfile(_meshfile)
+                rm(_meshfile)
+            end
+            if isfile(partfile)
+                rm(partfile)
+            end
+            if isfile(simfile)
+                rm(simfile)
+            end
         end
     end
     function pr_clicked(w)
-        if ra.active==true
+        if i_batch==1
+            if ra.active==true
+                i_plot=1
+            else
+                i_plot=0
+            end
+        elseif i_batch==2
+            i_plot=1
+        end
+        if i_plot==1
             i_model=parse(Int,get_gtk_property(par_0,:text,String))
             i_var_in=pr3.selected
 
@@ -2194,7 +2358,16 @@ using LinearAlgebra
 
     end
     signal_connect(pf1, "value-changed") do widget, others...
-        if ra.active==true
+        if i_batch==1
+            if ra.active==true
+                i_plot=1
+            else
+                i_plot=0
+            end
+        elseif i_batch==2
+            i_plot=1
+        end
+        if i_plot==1
             #println("Value changed")
             value = Int(round(Gtk4.value(pf1)))
             #println(string(value))
@@ -2422,8 +2595,14 @@ using LinearAlgebra
     function in3_clicked(w)
         savepath = mypath   #with trailing /
         meshfile = get_gtk_property(mf,:text,String)
-        partfile = get_gtk_property(in2,:text,String)
-        simfile = get_gtk_property(in2a,:text,String) 
+        if i_batch==1
+            partfile = get_gtk_property(in2,:text,String)
+            simfile = get_gtk_property(in2a,:text,String) 
+        elseif i_batch==2
+            inputfilename=get_gtk_property(inputfile2,:text,String);
+            partfile=create_partfile(inputfilename)
+            simfile=create_simfile(inputfilename)
+        end
         t_max = parse(Float64,get_gtk_property(t,:text,String))  #100.
         t_step = t_max/16
         i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
@@ -2450,6 +2629,48 @@ using LinearAlgebra
         end
 
         LCMsim_v3.create_and_solve(savepath,meshfile,partfile,simfile,modeltype,i_advanced,t_max,t_step,LCMsim_v3.verbose,true,true)
+    end
+    function in4_clicked(w)  
+        savepath = mypath   #with trailing /
+        meshfile = get_gtk_property(mf,:text,String)
+        if i_batch==1
+            partfile = get_gtk_property(in2,:text,String)
+            simfile = get_gtk_property(in2a,:text,String) 
+        elseif i_batch==2
+            inputfilename=get_gtk_property(inputfile2,:text,String);
+            partfile=create_partfile(inputfilename)
+            simfile=create_simfile(inputfilename)
+        end
+        t_max = parse(Float64,get_gtk_property(t,:text,String))  #100.
+        t_step = t_max/16
+        i_model=parse(Int,get_gtk_property(par_0,:text,String))  #2
+        if i_model == 1
+            modeltype = LCMsim_v3.model_1
+        elseif i_model == 2         
+            modeltype = LCMsim_v3.model_2
+        else
+            modeltype = LCMsim_v3.model_3
+        end  
+        if f11.selected==0; i_advanced=Int64(0); elseif f11.selected==1; i_advanced=Int64(1); elseif f11.selected==2; i_advanced=Int64(2); end
+        
+        filename_parts=splitpath(meshfile)
+        _psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"_pset.csv")
+        if isfile(_psetfile)
+            rm(_psetfile)
+        end
+        meshfilename_parts=splitpath(meshfile)
+        meshfilename_parts[end]="_" * meshfilename_parts[end]
+        writefilename=joinpath(meshfilename_parts)
+        _meshfile=writefilename
+        if isfile(_meshfile)
+            rm(_meshfile)
+        end
+
+        sourcepath=joinpath(savepath,"data.jld2")
+        output_intervals=16
+
+        #LCMsim_v3.create_and_solve(savepath,meshfile,partfile,simfile,modeltype,i_advanced,t_max,t_step,LCMsim_v3.verbose,true,true)
+        LCMsim_v3.continue_and_solve(sourcepath,savepath,meshfile,partfile,simfile,modeltype,i_advanced,t_max,output_intervals,LCMsim_v3.verbose,true,true)
     end
     function a0_1_clicked(w)
         str = get_gtk_property(dir,:text,String); 
@@ -2801,6 +3022,24 @@ using LinearAlgebra
             if isfile(_psetfile)
                 mv(_psetfile,__psetfile,force=true) 
             end
+        elseif i_batch==2
+            meshfile=get_gtk_property(mf,:text,String);
+            inputfilename=get_gtk_property(inputfile2,:text,String);
+            partfile=create_partfile(inputfilename)
+            simfile=create_simfile(inputfilename)
+            meshfilename_parts=splitpath(meshfile)
+            meshfilename_parts[end]="_" * meshfilename_parts[end]
+            writefilename=joinpath(meshfilename_parts)
+            _meshfile=writefilename
+            if isfile(_meshfile)
+                rm(_meshfile)
+            end
+            filename_parts=splitpath(meshfile)
+            _psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"_pset.csv")
+            __psetfile=joinpath( joinpath(filename_parts[1:end-1]) ,"__pset.csv")
+            if isfile(_psetfile)
+                mv(_psetfile,__psetfile,force=true) 
+            end
         else
             partfile = joinpath(mypath,"_part_description.csv")
             writefilename=partfile
@@ -2943,6 +3182,10 @@ using LinearAlgebra
             if isfile(__psetfile)
                 mv(__psetfile,_psetfile,force=true) 
             end
+        elseif i_batch==2
+            if isfile(__psetfile)
+                mv(__psetfile,_psetfile,force=true) 
+            end
         end
 
 
@@ -3025,22 +3268,269 @@ using LinearAlgebra
         end
         rm(hdf_path)       
 
-        arrow_lengthscale=0.1*max(deltax,deltay,deltaz)
-        arrow_linewidth=arrow_lengthscale*0.1
-        arrow_arrowsize=2*arrow_linewidth
+        #arrow_lengthscale=0.1*max(deltax,deltay,deltaz)
+        #arrow_shaftradius=arrow_lengthscale*0.5
+        #arrow_tipradius=arrow_lengthscale*0.8
+        #arrow_arrowsize=2*arrow_shaftradius
+        #CS_x=arrows3d!(current_axis(),[0],[0],[0],[1],[0],[0],color=:red,shaftradius=arrow_shaftradius,tipradius=arrow_tipradius,tiplength=arrow_arrowsize,lengthscale=arrow_lengthscale)
+        #CS_y=arrows3d!(current_axis(),[0],[0],[0],[0],[1],[0],color=:green,shaftradius=arrow_shaftradius,tipradius=arrow_tipradius,tiplength=arrow_arrowsize,lengthscale=arrow_lengthscale)
+        #CS_z=arrows3d!(current_axis(),[0],[0],[0],[0],[0],[1],color=:blue,shaftradius=arrow_shaftradius,tipradius=arrow_tipradius,tiplength=arrow_arrowsize,lengthscale=arrow_lengthscale)
 
-        CS_x=arrows!([0],[0],[0],[1],[0],[0],color=:red,linewidth = arrow_linewidth,arrowsize=arrow_arrowsize,lengthscale=arrow_lengthscale)
-        CS_y=arrows!([0],[0],[0],[0],[1],[0],color=:green,linewidth = arrow_linewidth,arrowsize=arrow_arrowsize,lengthscale=arrow_lengthscale)
-        CS_z=arrows!([0],[0],[0],[0],[0],[1],color=:blue,linewidth = arrow_linewidth,arrowsize=arrow_arrowsize,lengthscale=arrow_lengthscale)
+        arrow_lengthscale=0.1*max(deltax,deltay,deltaz)
+        arrow_linewidth=5
+        p0 = Point3f(0,0,0)
+        p1 = Point3f(arrow_lengthscale,0,0)
+        linesegments!(current_axis(),[p0, p1];linewidth=arrow_linewidth,color = :red)
+        p0 = Point3f(0,0,0)
+        p1 = Point3f(0,arrow_lengthscale,0)
+        linesegments!(current_axis(),[p0, p1];linewidth=arrow_linewidth,color = :green)
+        p0 = Point3f(0,0,0)
+        p1 = Point3f(0,0,arrow_lengthscale)
+        linesegments!(current_axis(),[p0, p1];linewidth=arrow_linewidth,color = :blue)
+        
+
+
 
     end
     function q_clicked(w)
         exit()
     end
 
+    function create_partfile(inputfilename)
+        i_model=parse(Int,get_gtk_property(par_0,:text,String))
+        inputfilename=get_gtk_property(inputfile2,:text,String)
+        #creates partsfile from input_lcmsim file
+        partfile = joinpath(mypath,"_part_description.csv")
+        writefilename=partfile
+        touch(writefilename)
+        wfn = open(writefilename,"w")  
+        lines=String[]
+        push!(lines,"name,type,part_id,thickness,porosity,porosity_noise,permeability,permeability_noise,alpha,refdir1,refdir2,refdir3,porosity_1,p_1,porosity_2,p_2,n_CK,permeability_Z,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z")
+        
+        if i_model==1 || i_model==2
+            zeilen = String[]
+            open(inputfilename, "r") do io
+                for (i, line) in enumerate(eachline(io))
+                    if i < 5
+                        continue
+                    end                                
+                    if isempty(strip(line))  # abort if line is empty or line with only spaces 
+                        break
+                    end         
+                    push!(zeilen, line)
+                end
+            end            
+
+            for i_line=1:length(zeilen)
+                arr = strip.(split(zeilen[i_line], ","))
+                    if i_line==1
+                        if arr[2] != "base"
+                            @info "Line 5 must be of type 'base': $(arr[2])"
+                        end
+                    end                    
+                    if arr[2] == "inlet" || arr[2] == "outlet"
+                        arr_base = strip.(split(zeilen[1], ","))
+                        arr=[arr[1:2]; arr_base[3:9]]
+                    end
+                    i_patch=i_line
+                    str10a=arr[1]  #patch name
+                    str10b=arr[2]  #patch type: inlet, patch, outlet
+                    str10c=string(i_patch)  #patch number 
+                    str11=arr[3]
+                    str12=arr[4]
+                    str13=arr[5]
+                    str14=arr[6]
+                    str15=arr[7]
+                    str16=arr[8]
+                    str17=arr[9]
+                    str18=str12
+                    str19="0.5e5"
+                    str19a=str12
+                    str19b="1.0e5"
+                    str19c="0.0"
+                    str19d=str13
+                    str19e=0.0
+                    str19f=str12
+                    str19g=str13
+                    str19h=str13
+                push!(lines,string(str10a,",",str10b,",",str10c,",",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+            end
+        elseif i_model==3
+            @info "Not implemented yet"
+        end
+
+        i_dbg=0;
+        if i_dbg==1;        
+            i_patch=1
+            str10b="base"  #patch type: inlet, patch, outlet
+            str10a=str10b*string(i_patch)  #patch name
+            str10c=string(i_patch)  #patch number 
+            str11="3e-3"
+            str12="0.7"
+            str13="3e-10"
+            str14="1"
+            str15="1"
+            str16="0"
+            str17="0"
+            str18=str12
+            str19="0.5e5"
+            str19a=str12
+            str19b="1.0e5"
+            str19c="0.0"
+            str19d=str13
+            str19e=0.0
+            str19f=str12
+            str19g=str13
+            str19h=str13
+            push!(lines,string(str10a,",",str10b,",",str10c,",",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+            i_patch=2
+            str10b="inlet"  #patch type: inlet, patch, outlet
+            str10a=str10b*string(i_patch)  #patch name
+            str10c=string(i_patch)  #patch number 
+            str11="3e-3"
+            str12="0.7"
+            str13="3e-10"
+            str14="1"
+            str15="1"
+            str16="0"
+            str17="0"
+            str18=str12
+            str19="0.5e5"
+            str19a=str12
+            str19b="1.0e5"
+            str19c="0.0"
+            str19d=str13
+            str19e=0.0
+            str19f=str12
+            str19g=str13
+            str19h=str13
+            push!(lines,string(str10a,",",str10b,",",str10c,",",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+            i_patch=3
+            str10b="patch"  #patch type: inlet, patch, outlet
+            str10a=str10b*string(i_patch)  #patch name
+            str10c=string(i_patch)  #patch number 
+            str11="3e-3"
+            str12="0.7"
+            str13="3e-10"
+            str14="1"
+            str15="1"
+            str16="0"
+            str17="0"
+            str18=str12
+            str19="0.5e5"
+            str19a=str12
+            str19b="1.0e5"
+            str19c="0.0"
+            str19d=str13
+            str19e=0.0
+            str19f=str12
+            str19g=str13
+            str19h=str13
+            push!(lines,string(str10a,",",str10b,",",str10c,",",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+            i_patch=4
+            str10b="patch"  #patch type: inlet, patch, outlet
+            str10a=str10b*string(i_patch)  #patch name
+            str10c=string(i_patch)  #patch number 
+            str11="3e-3"
+            str12="0.7"
+            str13="3e-10"
+            str14="1"
+            str15="1"
+            str16="0"
+            str17="0"
+            str18=str12
+            str19="0.5e5"
+            str19a=str12
+            str19b="1.0e5"
+            str19c="0.0"
+            str19d=str13
+            str19e=0.0
+            str19f=str12
+            str19g=str13
+            str19h=str13
+            push!(lines,string(str10a,",",str10b,",",str10c,",",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+            #i_patch=5
+            #str10b="patch"  #patch type: inlet, patch, outlet
+            #str10a=str10b*string(i_patch)  #patch name
+            #str10c=string(i_patch)  #patch number 
+            #str11="3e-3"
+            #str12="0.7"
+            #str13="3e-10"
+            #str14="1"
+            #str15="1"
+            #str16="0"
+            #str17="0"
+            #str18=str12
+            #str19="0.5e5"
+            #str19a=str12
+            #str19b="1.0e5"
+            #str19c="0.0"
+            #str19d=str13
+            #str19e=0.0
+            #str19f=str12
+            #str19g=str13
+            #str19h=str13
+            #push!(lines,string(str10a,",",str10b,",",str10c,",",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+            #i_patch=6
+            #str10b="patch"  #patch type: inlet, patch, outlet
+            #str10a=str10b*string(i_patch)  #patch name
+            #str10c=string(i_patch)  #patch number 
+            #str11="3e-3"
+            #str12="0.7"
+            #str13="3e-10"
+            #str14="1"
+            #str15="1"
+            #str16="0"
+            #str17="0"
+            #str18=str12
+            #str19="0.5e5"
+            #str19a=str12
+            #str19b="1.0e5"
+            #str19c="0.0"
+            #str19d=str13
+            #str19e=0.0
+            #str19f=str12
+            #str19g=str13
+            #str19h=str13
+            #push!(lines,string(str10a,",",str10b,",",str10c,",",str11,",",str12,",0.0,",str13,",0.0,",str14,",",str15,",",str16,",",str17,",",str18,",",str19,",",str19a,",",str19b,",",str19c,",",str19d,",",str19e,",",str19f,",",str19g,",",str19h))
+        end
+
+
+        for line in lines
+            println(wfn,line)
+        end
+        close(wfn)
+        return partfile
+    end
+    function create_simfile(inputfilename)
+        #creates simfile from input_lcmsim file
+        simfile = joinpath(mypath,"_simulation_params.csv")
+        writefilename=simfile
+        touch(writefilename)
+        wfn = open(writefilename,"w")  
+        lines=String[]
+
+        inputfilename=get_gtk_property(inputfile2,:text,String);
+        line2 = readlines(inputfilename)[2]
+        line2_string = join(strip.(split(line2, ",")), ", ")
+
+        if i_model==1 || i_model==2 || i_model==3
+            push!(lines,"p_ref,rho_ref,gamma,mu_resin,p_a,p_init,rho_0_air,rho_0_oil")
+            push!(lines,string("1.01325e5,1.225,1.4,",line2_string))
+        end
+        
+        for line in lines
+            println(wfn,line)
+        end
+        close(wfn)
+        return simfile
+    end
+
     #callbacks
+    signal_connect(inputfile1_clicked,inputfile1,"clicked")
     signal_connect(sm_clicked,sm,"clicked")
     signal_connect(ps_clicked,ps,"clicked")
+    signal_connect(ph_clicked,ph,"clicked")
     signal_connect(pm_clicked,pm,"clicked")
     signal_connect(sel_clicked,sel,"clicked")
     signal_connect(ss_clicked,ss,"clicked")
@@ -3051,6 +3541,7 @@ using LinearAlgebra
     signal_connect(in1_clicked,in1,"clicked")
     signal_connect(in1a_clicked,in1a,"clicked")
     signal_connect(in3_clicked,in3,"clicked")
+    signal_connect(in4_clicked,in4,"clicked")
     signal_connect(a0_1_clicked,a0_1,"clicked")
     signal_connect(a1_1_clicked,a1_1,"clicked")
     signal_connect(a2_1_clicked,a2_1,"clicked")
