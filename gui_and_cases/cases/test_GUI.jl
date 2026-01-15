@@ -1,5 +1,5 @@
 #start this file in folder with pwd()=LCMsim_GUI
-i_batch=2  
+i_batch=2 
 i_model=2
 i_mesh=1
 mypath=joinpath(pwd(),"gui_and_cases\\cases")
