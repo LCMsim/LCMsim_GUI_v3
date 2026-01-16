@@ -2,8 +2,8 @@ i_batch=2
 i_model=2
 i_mesh=1
 mypath=joinpath(pwd())
-repositorypath="D:\\work\\github\\LCMsim_v3.jl"
-guipath="D:\\work\\github\\LCMsim_GUI_v3\\gui_and_cases\\gui"
+repositorypath="..\\..\\..\\LCMsim_v3.jl-main"
+guipath="..\\gui"
 
 include(joinpath(guipath,"lcmsim_v3_gui_gtk4.jl"))
 
