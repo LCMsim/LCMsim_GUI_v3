@@ -32,7 +32,10 @@ For discretizing the equations on the shell mesh of the part's mid-surface it is
 
 The solver section (which is the relevant section if a different physical model is implemented) consists of a `for`-loop over all interior and wall cells inside a `while`-loop for the time evolution. For every interior and wall cell, the following steps are performed: First, the pressure and filling fraction gradients are evaluated. Second, the time evolution for new mass density, $x$- and $y$-velocities with the discretized continuum, $x$- and $y$-momentum equations in the cell coordinate systems is performed. Third, the pressure is evaluated according to the equation of state. Forth, the filling fraction is evaluated. Boundary conditions need not be updated since in the inlet and outlet cells pressure and mass density remain unchanged and the velocity values at the cell boundaries are evaluated in the numerical flux evaluation.
 
-Find more background information in the paper [C. Obertscheider, E. Fauster and S. Stieber, Experimental validation of a new adaptable LCM mold filling software](https://www.tandfonline.com/doi/full/10.1080/20550340.2023.2282310)
+Find more background information on 
+- the physical modeling and validation with experiments in the paper [C. Obertscheider, E. Fauster and S. Stieber, Experimental validation of a new adaptable LCM mold filling software](https://www.tandfonline.com/doi/full/10.1080/20550340.2023.2282310) 
+- the the software structure in the paper [C. Obertscheider, L. Heber, C. Lenzen and E. Fauster, Refactoring of LCMsim: A Lightweight Julia Package for Mould Filling Simulations in Liquid Composite Moulding](https://link.springer.com/chapter/10.1007/978-3-031-92196-4_7) 
+
 
 
 
