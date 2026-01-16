@@ -117,6 +117,6 @@ The LCMsim test cases (https://github.com/LCMsim/LCMsim_v3.jl/tree/main?tab=read
 Plese see https://lcmsim.github.io/LCMsim_GUI_v3/build/tutorials/ for different applications (still with LCMsim v2; will be updated soon)
 
 ## Relevant literature
-[Validation of the precedessor version LCMsim](figures/ampcs_LCMsim.pdf)
-[Refactoring of the precedessor version LCMsim](figures/LCMsim_refactoring.pdf)
+- [Validation of the precedessor version LCMsim](figures/ampcs_LCMsim.pdf)
+- [Refactoring of the precedessor version LCMsim](figures/LCMsim_refactoring.pdf)
 
