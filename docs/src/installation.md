@@ -60,9 +60,9 @@ If the folder structure and names are as shown above in the tree, relative paths
 - `mypath` is the path where this config file is
 - `repositorypath` is the path to the LCMsim v3 folder which includes the `src`folder with the Julia files 
 - `guipath` is the path to the LCMsim GUI folder which includes the Julia file for the GUI
-- `i_batch=2` opens a GUI which takes a mesh file (for example `casefiles\mesh_0.dat`) and an input file (for example `casefiles\input_lcmsim_0.csv`) with all process and preform paramters as input. With `i_batch=1` one can run the LCMsim test cases form https://github.com/LCMsim/LCMsim_v3.jl/tree/main?tab=readme-ov-file#test-cases with a mesh file (for example `casefiles\mesh_0.dat`), a part description file (for example `casefiles\part_description_0.csv`) which specifies the preform patches and a simulation parameter file (for example `casefiles\simulation_params_0.csv`) which specifies the process parameters. 
+- `i_batch=2` opens a GUI which takes a mesh file (for example `casefiles\mesh_0.dat`) and an input file (for example `casefiles\input_lcmsim_0.csv`) with all process and preform paramters as input. With `i_batch=1` one can run the [LCMsim test cases](https://github.com/LCMsim/LCMsim_v3.jl/tree/main?tab=readme-ov-file#test-cases) with a mesh file (for example `casefiles\mesh_0.dat`), a part description file (for example `casefiles\part_description_0.csv`) which specifies the preform patches and a simulation parameter file (for example `casefiles\simulation_params_0.csv`) which specifies the process parameters. 
 - `i_model=2` is used for RTM and `i_model=3` for VARI filling simulations.
-- `i_mesh=1` is used for NASTRAN mesh format with extension `*.dat`, `i_mesh=2` is used for ABAQUS mesh format (for example created with PREPOMAX which is freely available on https://prepomax.fs.um.si/) with extension `*.inp`. 
+- `i_mesh=1` is used for NASTRAN mesh format with extension `*.dat`, `i_mesh=2` is used for ABAQUS mesh format (for example created with the freely available [PREPOMAX](https://prepomax.fs.um.si/)) with extension `*.inp`. 
 The following code snippets show how the mesh format has look. Only first order triangular elements are supported at the moment. 
 ```
 SET 1 = 1,2,3,4,5,6,
