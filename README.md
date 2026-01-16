@@ -1,9 +1,10 @@
 # GUI for LCMsim v3
 
 ## Installation
+LCMsim v3 was developed for use with Windows 11. For running a 
 
-
-
+### Download
+LCMsim simulation with the GUI, download and extract the LCMsim_v3 repository (https://github.com/LCMsim/LCMsim_v3.jl) and this LCMsim_GUI_v3 repository (https://github.com/LCMsim/LCMsim_GUI_v3). Relevant files and folders are shown in the following tree:
 
 ```
 |
@@ -37,8 +38,11 @@
 |    |----LICENSE
 |    |----README.md
 |    
-
 ```
+
+### Instal Julia
+If not
+
 
 ## Open the GUI for testing purpose
 - Download the zipped repository and extract
