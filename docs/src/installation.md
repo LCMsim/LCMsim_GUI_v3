@@ -1,7 +1,5 @@
 # Installation 
 
-## Installation
-LCMsim v3 was developed for use with Windows 11. 
 
 ### Download
 For running a LCMsim simulation with the GUI, download and extract the LCMsim_v3 repository (https://github.com/LCMsim/LCMsim_v3.jl) and this LCMsim_GUI_v3 repository (https://github.com/LCMsim/LCMsim_GUI_v3). Relevant files and folders are shown in the following tree:
