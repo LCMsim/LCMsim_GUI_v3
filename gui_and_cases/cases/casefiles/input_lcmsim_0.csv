@@ -4,7 +4,7 @@ mu_resin,p_a,p_init,rho_0_air,rho_0_oil
 name,type,thickness,porosity,permeability,alpha,refdir1,refdir2,refdir3
 base,base,3e-3,0.7,3e-10,1.0,1,0,0
 central_inlet,inlet
-patch1,patch,3e-3,0.7,3e-10,1.0,1,0,0
+patch1,patch,3e-3,0.7,3e-11,1.0,1,0,0
 patch2,patch,3e-3,0.7,3e-11,1.0,1,0,0
-patch3,patch,3e-3,0.7,3e-11,1.0,1,0,0
-patch3,patch,3e-3,0.7,3e-12,1.0,1,0,0
+patch3,patch,3e-3,0.7,3e-8,1.0,1,0,0
+patch3,patch,3e-3,0.7,3e-10,1.0,1,0,0

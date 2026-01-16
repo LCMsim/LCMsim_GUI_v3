@@ -1,5 +1,45 @@
 # GUI for LCMsim v3
 
+## Installation
+
+
+
+
+```
+|
+|----lcmsim_v3.jl
+|    |----src
+|    |----test
+|    |----LICENSE
+|    |----README.md
+|
+|----lcmsim_GUI_v3.jl
+|    |----docs
+|    |----gui_and_cases
+|    |    |----cases
+|    |    |    |----casefiles
+|    |    |    |    |----input_lcmsim_0.csv
+|    |    |    |    |----mesh_0.dat
+|    |    |    |    |----part_description_0.csv
+|    |    |    |    |----simulation_params_0.csv
+|    |    |    |     
+|    |    |    |----lcmsim_launch.bat
+|    |    |    |----lcmsim_launch.jl
+|    |    |    
+|    |    |----gui
+|    |         |----lcmsim_v3_gui_gtk4.jl
+|    |    
+|    |----install
+|    |    |----lcmsim_install.jl
+|    |    |----lcmsim_install_juliawithpackages.bat
+|    |    |----lcmsim_install_onlypackages.bat
+|    |    
+|    |----LICENSE
+|    |----README.md
+|    
+
+```
+
 ## Open the GUI for testing purpose
 - Download the zipped repository and extract
 - Edit gui_and_cases\cases\test_GUI.jl: 
