@@ -102,11 +102,12 @@ guipath="D:\\work\\LCMsim_v3\\LCMsim_GUI_v3-main\\gui_and_cases\\gui"
 
 include(joinpath(guipath,"lcmsim_v3_gui_gtk4.jl"))
 ```
-The double backslash `\\` is used here for Windows paths in Julia.
+The double backslash `\\` is used here for Windows paths in Julia. 
 
 ## Launch with `i_batch=2`
-This is the default operation of LCMsim v3. 
-![image](figures/GUI_mode2.jpg)
+This is the default operation of LCMsim v3. Select input file `casefile\lcmsim_input_1.csv` and the select mesh file `casefile\mesh_1.dat` in order to run to run a radial flow experiment as described by the [first V&V case](figures/JOSS_RTMsim.pdf). 
+Select input file `casefile\lcmsim_input_22.csv` and the select mesh file `casefile\mesh_22.dat` in order to run to run the [VARI test case](figures/LKK2025_LCMsim_v3_VARI.pdf) presented at LKK 2025.
+![image](figures/GUI_mode2.jpg) 
 
 ## Launch with `i_batch=1`
 The LCMsim test cases (https://github.com/LCMsim/LCMsim_v3.jl/tree/main?tab=readme-ov-file#test-cases) are available. For example, in order to start the FPCM test case 31, one has to set i_batch=0, i_model=3, i_mesh=1. Then in the GUI select the mesh, part and simulation files with the names mesh_31.dat, part_description_31.csv and simulation_params_31.csv from the test folder in the LCMsim_v3 repository. Change simulation time to 30 and click on Run with input files. After the simulation is finished tick Results available and click Plot resutls.
