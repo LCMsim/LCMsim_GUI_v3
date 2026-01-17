@@ -116,7 +116,7 @@ guipath="D:\\work\\LCMsim_v3\\LCMsim_GUI_v3-main\\gui_and_cases\\gui"
 
 include(joinpath(guipath,"lcmsim_v3_gui_gtk4.jl"))
 ```
-The double backslash `\\` is used here for Windows paths in Julia. Copy relevant input files from `LCMsim_GUI_v3-main\gui_and_cases\cases\casefiles` to this folder, for example `lcmsim_input_0.csv` and `mesh_0.dat`. One can create a shortcut to `LCMsim_GUI_v3-main\gui_and_cases\cases\lauch_lcmsim.bat` on the desktop and then launch LCMsim v3 by double-clicking on the desktop shortcut. 
+The double backslash `\\` is used here for Windows paths in Julia. Copy relevant input files from `LCMsim_GUI_v3-main\gui_and_cases\cases\casefiles` to this folder, for example `lcmsim_input_0.csv` and `mesh_0.dat`. One can create a shortcut to `LCMsim_GUI_v3-main\gui_and_cases\cases\lauch_lcmsim.bat` on the desktop and then launch LCMsim v3 by double-clicking on the desktop shortcut. To change the shortcut's icon, right-click the shortcut, select properties, go to the shortcut tab, click change icon, then browse to `LCMsim_GUI_v3-main\gui_and_cases\figuress` and select `LCMsim_logo.ico`.
 
 
 ## Launch with `i_batch=2`
