@@ -36,6 +36,8 @@ Link to the validation paper:
 ```
 
 ## With meshing
+Th software PrePoMax which is used for mesh generation is available on the [PrePoMax download site](https://prepomax.fs.um.si/downloads/)
+
 This video tutorial shows to create a mesh and run a simulation. Several applications are studied: Mulitple point and cascade injection for a winglet spar. Set definition for permeamter. Meshing of complex geometry.
 
 Here you can download the mid-surface geometry files:
