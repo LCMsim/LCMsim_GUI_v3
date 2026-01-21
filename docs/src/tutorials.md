@@ -41,15 +41,16 @@ Link to the validation paper:
 ```
 
 ## With meshing
-Th software PrePoMax which is used for mesh generation is available on the [PrePoMax download site](https://prepomax.fs.um.si/downloads/)
+The software PrePoMax which is used for mesh generation is available on the [PrePoMax download site](https://prepomax.fs.um.si/downloads/)
 
-This video tutorial shows to create a mesh and run a simulation. Several applications are studied: Mulitple point and cascade injection for a winglet spar. Set definition for permeamter. Meshing of complex geometry.
+This video tutorial shows how to create a mesh and afterwards run a simulation with this mesh. Several applications are studied: Permeameter experiment with own mesh and annulus filler.  For the annulus filler rear injection gives converging flow fronts, front injection does not. For front injection the location of the vent can be determined as the region where the flow front arrives at latest. For the annulus filler also cascade injection is demonstrated, although this is used for larger parts as for the winglet spar. M
 
 Here you can download the mid-surface geometry files:
-[Defeatured spar](assets/geom/mesh_spar3.stp), 
-[Spar](assets/geom/mesh_spar2.stp),
 [Permeameter](assets/geom/mesh_permeameter1.step), 
-[Annulus filler](assets/geom/mesh_annulusfiller11.stp)
+[Annulus filler](assets/geom/mesh_annulusfiller11.stp), 
+[Defeatured spar](assets/geom/mesh_spar3.stp), 
+[Spar](assets/geom/mesh_spar2.stp)
+
 
 ```@raw html
 <iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=0e7c0412-80b0-4800-9d7e-b0f200add73c&autoplay=false&offerviewer=false&showtitle=false&showbrand=false&captions=false&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer"></iframe>
