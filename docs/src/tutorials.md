@@ -19,11 +19,16 @@ Here you can find the links to the GitHub repositories:
 ```
 
 ## Radial flow
-This video tutorial shows how to perform a radial flow RTM filling simulation.
+The following two video tutorials shows how background and simulation of RTM flow inside a radial flow permeameter.
 
 ```@raw html
-<iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=dfa9ec37-4d93-4144-bffc-b0f200781592&autoplay=false&offerviewer=false&showtitle=false&showbrand=false&captions=false&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer"></iframe>
+<iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=8b57043d-75b4-438e-b957-b3d900bc1281&autoplay=false&offerviewer=true&showtitle=true&showbrand=true&captions=false&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer"></iframe>
 ```
+
+```@raw html
+<iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=b7fd85f5-707c-4c6f-8943-b3d900b518ca&autoplay=false&offerviewer=true&showtitle=true&showbrand=true&captions=false&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer"></iframe>
+```
+
 
 ## Validation case
 This video tutorial shows how to reproduce the results from validation case 1 from the validation paper.
