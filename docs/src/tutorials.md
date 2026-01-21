@@ -9,10 +9,10 @@ This video tutorial gives an overview of relevant topics for RTM filling simulat
 ```
 
 ## Software installation
-This video tutorial shows how the LCMsim software and the meshing software PrePoMax are installed.  
+This video tutorial shows how the LCMsim software is installed.  
 
-Here you can find the links to the software tools:
-[LCMsim v3 on GitHub](https://github.com/LCMsim/LCMsim_v3.jl), [GUI for LCMsim v3 on Github](https://github.com/LCMsim/LCMsim_GUI_v3), [PrePoMax download](https://prepomax.fs.um.si/downloads/)
+Here you can find the links to the GitHub repositories:
+[LCMsim v3 on GitHub](https://github.com/LCMsim/LCMsim_v3.jl), [GUI for LCMsim v3 on Github](https://github.com/LCMsim/LCMsim_GUI_v3),
 
 ```@raw html
 <iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=f2f389e6-fcca-4b3f-8500-b3d8010ee602&autoplay=false&offerviewer=true&showtitle=true&showbrand=true&captions=false&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer"></iframe>
