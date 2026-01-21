@@ -11,7 +11,7 @@ Here you can find the links to the software tools:
 [LCMsim on GitHub](https://github.com/obertscheiderfhwn/LCMsim), [PrePoMax download](https://prepomax.fs.um.si/downloads/)
 
 ```@raw html
-<iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=a3b5d169-fa52-4f0c-b9cd-b0f100c57a9b&autoplay=false&offerviewer=false&showtitle=false&showbrand=false&captions=false&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer"></iframe>
+<iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=f2f389e6-fcca-4b3f-8500-b3d8010ee602&autoplay=false&offerviewer=true&showtitle=true&showbrand=true&captions=false&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer"></iframe>
 ```
 
 ## Radial flow
