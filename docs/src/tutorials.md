@@ -1,5 +1,5 @@
 # Tutorials
-Here you can find useful background informaiton, LCMsim installation and typical simualtions performed with LCMsim.
+Here you can find a video tutorial how to install the software and video tutorials how to perform filling simulations for RTM parts. Video tutorials how to perform filling simulations for VARI parts will follow.
 
 ## Introduction into RTM
 This video tutorial gives an overview of relevant topics for RTM filling simulations.  
