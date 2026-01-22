@@ -2218,6 +2218,7 @@ using LinearAlgebra
 
             polys::Vector{Polygon} = []
             gamma::Vector{Float64} = []
+            gamma_type::Vector{Float64} = []
 
             h5open(joinpath(savepath,"data.h5"), "r") do meshfile
 
@@ -2273,6 +2274,7 @@ using LinearAlgebra
                 #gammas = [read_dataset(meshfile["/" * state], "p") for state in states]
 
                 gamma = read_dataset(meshfile["properties"], "thickness")
+                gamma_type = read_dataset(meshfile["properties"], "type")
 
                 cgammasvec=Array{Float64}(undef, 3, N,length(gammas))
                 cgammasvec_bw=Array{Float64}(undef, 3, N,length(gammas))
@@ -2280,11 +2282,9 @@ using LinearAlgebra
                     for cid in 1:N
                         for j in 1:3
                             cgammasvec[j,cid,tid]=gammas[tid][cid]
-
-                            #if cgammasvec[j,cid,tid]>=960;
-                            #    cgammasvec[j,cid,tid]=960
-                            #end
-
+                            if gamma_type[cid]==-1 || gamma_type[cid]==-2;  #different color for inlet and outlet
+                                cgammasvec[j,cid,tid]=0.95
+                            end
                             if cgammasvec[j,cid,tid]>=0.8;
                                 cgammasvec_bw[j,cid,tid]=1.0
                             else
