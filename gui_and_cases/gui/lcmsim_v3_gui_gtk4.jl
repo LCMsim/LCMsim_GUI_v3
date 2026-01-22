@@ -2282,8 +2282,10 @@ using LinearAlgebra
                     for cid in 1:N
                         for j in 1:3
                             cgammasvec[j,cid,tid]=gammas[tid][cid]
-                            if gamma_type[cid]==-1 || gamma_type[cid]==-2;  #different color for inlet and outlet
-                                cgammasvec[j,cid,tid]=0.95
+                            if i_var==0
+                                if gamma_type[cid]==-1 || gamma_type[cid]==-2;  #different color for inlet and outlet
+                                    cgammasvec[j,cid,tid]=0.95
+                                end
                             end
                             if cgammasvec[j,cid,tid]>=0.8;
                                 cgammasvec_bw[j,cid,tid]=1.0
