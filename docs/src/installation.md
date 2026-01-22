@@ -43,7 +43,7 @@ LCMsim_v3
 ### Install Julia
 Open the `LCMsim_v3.jl-main\install` folder in an explorer and double-click on `lcmsim_install_juliawithpackages.bat` to install Julia programming language with all required packages for LCMsim v3 or double-click on `lcmsim_install_onlypackages.bat` if Julia programming language is already installed on the computer and only the required packages for LCMsim v3 are missing.
 
-### Launch the GUI
+### Launch the GUI - Method 1
 
 Open the `LCMsim_GUI_v3-main\gui_and_cases\cases` folder. This is the working directory where LCMsim v3 creates all files. Edit file `lcmsim_launch.jl`: 
 ```
@@ -90,6 +90,8 @@ CTRIA3         2       0      16      10      19
 1141, 1142, 1143, 1144, 1145, 1146, 1147, 1148, 1149, 1150, 1151, 1152, 1153, 1154, 1155, 1156
 ```
 
+### Launch the GUI - Method 2
+
 Alternatively, a case folder can be created outside the installation files. Copy the `cases` folder somewhere on your data drive and optionally rename it to LCMsim_v3_cases. The you have to give absolute paths in the `lcmsim_launch.jl` file, for example:
 ```
 i_batch=2
@@ -102,6 +104,21 @@ guipath="D:\\work\\LCMsim_v3\\LCMsim_GUI_v3-main\\gui_and_cases\\gui"
 include(joinpath(guipath,"lcmsim_v3_gui_gtk4.jl"))
 ```
 The double backslash `\\` is used here for Windows paths in Julia. 
+
+### Launch the GUI - Method 3
+
+If one wants a working directory which only includes the input files, the paths in the `lcmsim_launch.jl` file in the `LCMsim_GUI_v3-main\gui_and_cases\cases` folder must be changed for example: 
+```
+i_batch=2
+i_model=2
+i_mesh=1
+mypath="D:\\work\\myworkingdirectory"
+repositorypath="D:\\work\\LCMsim_v3\\LCMsim_v3.jl-main"
+guipath="D:\\work\\LCMsim_v3\\LCMsim_GUI_v3-main\\gui_and_cases\\gui"
+
+include(joinpath(guipath,"lcmsim_v3_gui_gtk4.jl"))
+```
+The double backslash `\\` is used here for Windows paths in Julia. Copy relevant input files from `LCMsim_GUI_v3-main\gui_and_cases\cases\casefiles` to this folder, for example `lcmsim_input_0.csv` and `mesh_0.dat`. One can create a shortcut to `LCMsim_GUI_v3-main\gui_and_cases\cases\lauch_lcmsim.bat` on the desktop and then launch LCMsim v3 by double-clicking on the desktop shortcut. To change the shortcut's icon, right-click the shortcut, select properties, go to the shortcut tab, click change icon, then browse to `LCMsim_GUI_v3-main\gui_and_cases\figuress` and select `LCMsim_logo.ico`.
 
 
 
