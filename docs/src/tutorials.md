@@ -45,7 +45,7 @@ The software PrePoMax which is used for mesh generation is available on the [Pre
 
 This video tutorial shows how to create a mesh and afterwards run a simulation with this mesh. Several applications are studied: Permeameter experiment with own mesh and annulus filler.  For the annulus filler rear injection gives converging flow fronts, front injection does not. For front injection the location of the vent can be determined as the region where the flow front arrives at latest. For the annulus filler also cascade injection is demonstrated, although this is used for larger parts as for the winglet spar. 
 
-Grphical point selection for reference direction and inlet positions is possible with key "P" + left mouse button clicked.
+Grphical point selection for reference direction and inlet positions is possible with key "p" + left mouse button clicked.
 
 Here you can download the mid-surface geometry files:
 [Permeameter](assets/geom/mesh_permeameter1.step), 
