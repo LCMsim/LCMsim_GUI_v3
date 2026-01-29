@@ -8,7 +8,7 @@ This video tutorial gives an overview of relevant topics for RTM filling simulat
 <iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=ffcf34b1-28ea-44f8-8d3c-b3d900dc7009&autoplay=false&offerviewer=false&showtitle=false&showbrand=false&captions=false&interactivity=none" style="border: 1px solid #464646; width: 720px; height: 405px;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer" aria-description="RTM"></iframe>
 ```
 
-## Software installation
+## LCMsim v3 installation
 This video tutorial shows how the LCMsim software is installed.  
 
 Here you can find the links to the GitHub repositories:
@@ -18,7 +18,7 @@ Here you can find the links to the GitHub repositories:
 <iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=f2f389e6-fcca-4b3f-8500-b3d8010ee602&autoplay=false&offerviewer=false&showtitle=false&showbrand=false&captions=false&interactivity=none" style="border: 1px solid #464646; width: 720px; height: 405px;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer" aria-description="LCMsim v3 installation"></iframe>
 ```
 
-## Radial flow
+## Radial RTM flow
 The following two video tutorials shows how background and simulation of RTM flow inside a radial flow permeameter.
 
 ```@raw html
@@ -30,7 +30,7 @@ The following two video tutorials shows how background and simulation of RTM flo
 ```
 
 
-## Validation case
+## RTM validation case
 This video tutorial shows how to reproduce the results from validation case 1 from the validation paper.
 
 Link to the validation paper:
@@ -40,7 +40,7 @@ Link to the validation paper:
 <iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=fdfa338a-d334-4c37-b525-b3d900cb10e5&autoplay=false&offerviewer=false&showtitle=false&showbrand=false&captions=false&interactivity=none" style="border: 1px solid #464646; width: 720px; height: 405px;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer" aria-description="LCMsim v3 validation"></iframe>
 ```
 
-## With meshing
+## RTM filling with meshing
 The software PrePoMax which is used for mesh generation is available on the [PrePoMax download site](https://prepomax.fs.um.si/downloads/)
 
 This video tutorial shows how to create a mesh and afterwards run a simulation with this mesh. Several applications are studied: Permeameter experiment with own mesh and annulus filler.  For the annulus filler rear injection gives converging flow fronts, front injection does not. For front injection the location of the vent can be determined as the region where the flow front arrives at latest. For the annulus filler also cascade injection is demonstrated, although this is used for larger parts as for the winglet spar. 
@@ -59,7 +59,7 @@ Here you can download the mid-surface geometry files:
 ```
 
 
-## Filling simulations for VARI
+## VARI filling simulations
 
 This video tutorial shows how to perform filling simulations for VARI parts.  
 
