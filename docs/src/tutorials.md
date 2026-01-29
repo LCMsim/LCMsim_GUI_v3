@@ -1,5 +1,5 @@
 # Tutorials
-Here you can find a video tutorial how to install the software and video tutorials how to perform filling simulations for RTM parts. Video tutorials how to perform filling simulations for VARI parts will follow.
+Here you can find a video tutorial how to install the software and video tutorials how to perform filling simulations for RTM parts. Also one video tutorial shows how to perform filling simulations for a VARI part.
 
 ## Introduction into RTM
 This video tutorial gives an overview of relevant topics for RTM filling simulations.  
@@ -59,6 +59,13 @@ Here you can download the mid-surface geometry files:
 ```
 
 
+## Filling simulations for VARI
+
+This video tutorial shows how to perform filling simulations for VARI parts.  
+
+```@raw html
+<iframe src="https://fhwn.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=cc4ffc0c-2b12-4eb6-9110-b3e100b596a8&autoplay=false&offerviewer=false&showtitle=false&showbrand=false&captions=false&interactivity=none" style="border: 1px solid #464646; width: 720px; height: 405px;" allowfullscreen allow="autoplay" aria-label="In Panopto integrierter Videoplayer" aria-description="LCMsim v3 introduction VARI"></iframe>
+```
 
 
 

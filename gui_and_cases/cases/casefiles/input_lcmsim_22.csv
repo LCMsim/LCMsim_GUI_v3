@@ -1,7 +1,7 @@
 mu_resin,p_a,p_init,rho_0_air,rho_0_oil
 0.3,1.00e5,0.23e5,1.225,960
 
-name,type,thickness0,porosity0,pressure0,pressure1_at_1bar,permeability,alpha,permeability_Z,refdir1,refdir2,refdir3,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z
+name,type,thickness0,porosity0,pressure0,porosity1_at_1bar,permeability,alpha,permeability_Z,refdir1,refdir2,refdir3,thickness_DM,porosity_DM,permeability_DM,permeability_DM_Z
 base,base,   0.0022,0.460,0.23e5,0.61,8.5e-11,1.0,1.25e-12,1,0,0,0.00055,0.5,14e-10  
 left_inlet,inlet
 patch1,patch,0.0022,0.460,0.23e5,0.61,8.5e-11,1.0,1.25e-12,1,0,0,0.0
