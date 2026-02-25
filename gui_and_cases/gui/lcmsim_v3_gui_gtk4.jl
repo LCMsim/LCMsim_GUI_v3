@@ -43,6 +43,8 @@ using LinearAlgebra
         mf=GtkEntry(); set_gtk_property!(mf,:text,joinpath(mypath,"casefiles","mesh.dat"));
     elseif i_mesh==2
         mf=GtkEntry(); set_gtk_property!(mf,:text,joinpath(mypath,"casefiles","mesh.inp"));
+    elseif i_mesh==3
+        mf=GtkEntry(); set_gtk_property!(mf,:text,joinpath(mypath,"casefiles","mesh.dat"));
     end
     mf1=GtkEntry(); set_gtk_property!(mf1,:text,"0");
     mf2=GtkEntry(); set_gtk_property!(mf2,:text,"");set_gtk_property!(mf2,:editable,false)
@@ -310,6 +312,8 @@ using LinearAlgebra
             str = pick_file(mypath,filterlist="dat");
         elseif i_mesh==2
             str = pick_file(mypath,filterlist="inp");
+        elseif i_mesh==3
+            str = pick_file(mypath,filterlist="dat;inp");
         end
         #str = pick_file(mypath,filterlist="dat,inp");
         set_gtk_property!(mf,:text,str);
